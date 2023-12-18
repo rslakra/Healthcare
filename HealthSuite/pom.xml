@@ -1,21 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <!-- parent -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.8</version>
+        <!-- lookup parent from repository -->
+        <relativePath/>
+    </parent>
+    <!-- services -->
     <groupId>com.rslakra.healthcare</groupId>
     <artifactId>HealthSuite</artifactId>
+    <version>${revision}</version>
     <packaging>war</packaging>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>HealthSuite Webapp</name>
-    <url>http://maven.apache.org</url>
+    <name>${project.artifactId}</name>
+    <description>The ${project.artifactId} Webapp</description>
 
+    <!-- properties -->
     <properties>
+        <!-- revision -->
+        <revision>0.0.0</revision>
+
+        <!-- sourceEncoding & outputEncoding -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- java version -->
         <java.version>11</java.version>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+
+        <!-- maven plugins -->
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
+        <maven-release-plugin.version>3.0.0</maven-release-plugin.version>
+
+        <!-- checkstyle -->
+        <code-styles.dir>https://raw.githubusercontent.com/rslakra/code-styles/master</code-styles.dir>
+        <checkstyle.threshold>0</checkstyle.threshold>
+
+        <!-- appsuite-core -->
+        <appsuite-core.version>0.0.4</appsuite-core.version>
+
+        <!-- appsuite-spring -->
+        <appsuite-spring.version>0.0.4</appsuite-spring.version>
+
+        <!-- lombok -->
+        <lombok.version>1.18.28</lombok.version>
+
+        <!-- swagger -->
+        <swagger.skip>false</swagger.skip>
+
+        <!-- csv parser version -->
+        <commons-csv.version>1.9.0</commons-csv.version>
+        <opencsv.version>5.7.0</opencsv.version>
+        <!-- excel parser version -->
+        <poi.version>5.2.3</poi.version>
+        <poi-ooxml.version>5.2.3</poi-ooxml.version>
+
+        <!-- junit-jupiter-params -->
+        <junit-jupiter-params.version>5.9.2</junit-jupiter-params.version>
+
     </properties>
 
+    <!-- dependencies -->
     <dependencies>
+
+        <!-- appsuite-core -->
+        <dependency>
+            <groupId>com.devamatre.appsuite</groupId>
+            <artifactId>appsuite-core</artifactId>
+            <version>${appsuite-core.version}</version>
+        </dependency>
+
+        <!-- appsuite-spring -->
+        <dependency>
+            <groupId>com.devamatre.appsuite</groupId>
+            <artifactId>appsuite-spring</artifactId>
+            <version>${appsuite-spring.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -71,11 +146,10 @@
             <version>1.4.1</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.thoughtworks.xstream/xstream -->
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
-            <version>1.4.20</version>
+            <version>1.3.1</version>
         </dependency>
 
         <dependency>
@@ -99,8 +173,71 @@
 
     </dependencies>
 
+    <!-- build -->
     <build>
+        <!-- finalName  -->
         <finalName>${project.artifactId}</finalName>
+
+        <!-- plugins -->
+        <plugins>
+            <!-- spring-boot-maven-plugin -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <!-- maven-compiler-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+
+            <!-- maven-checkstyle-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven-checkstyle-plugin.version}</version>
+                <configuration>
+                    <configLocation>${code-styles.dir}/checkstyle.xml</configLocation>
+                    <propertiesLocation>${code-styles.dir}/checkstyle.properties</propertiesLocation>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <configLocation>${code-styles.dir}/styles.xml</configLocation>
+                            <logViolationsToConsole>true</logViolationsToConsole>
+                            <maxAllowedViolations>${checkstyle.threshold}</maxAllowedViolations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
+
+    <!-- reporting -->
+    <reporting>
+        <!-- plugins -->
+        <plugins>
+            <!-- maven-checkstyle-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven-checkstyle-plugin.version}</version>
+                <configuration>
+                    <configLocation>${code-styles.dir}/styles.xml</configLocation>
+                    <propertiesLocation>${code-styles.dir}/checkstyle.properties</propertiesLocation>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 
 </project>

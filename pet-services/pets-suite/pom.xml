@@ -3,6 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <!-- parent -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -10,20 +11,57 @@
         <!-- lookup parent from repository -->
         <relativePath/>
     </parent>
-
-    <groupId>com.rslakra</groupId>
+    <!-- services -->
+    <groupId>com.rslakra.healthcare.pet-services</groupId>
     <artifactId>pets-suite</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>${revision}</version>
     <packaging>jar</packaging>
+    <name>${project.artifactId}</name>
+    <description>The ${project.artifactId} Service</description>
 
+    <!-- properties -->
     <properties>
+        <!-- revision -->
+        <revision>0.0.0</revision>
+
+        <!-- sourceEncoding & outputEncoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- java version -->
         <java.version>11</java.version>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+
+        <!-- maven plugins -->
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
+        <maven-release-plugin.version>3.0.0</maven-release-plugin.version>
+
+        <!-- checkstyle -->
+        <code-styles.dir>https://raw.githubusercontent.com/rslakra/code-styles/master</code-styles.dir>
+        <checkstyle.threshold>0</checkstyle.threshold>
+
+        <!-- appsuite-core -->
+        <appsuite-core.version>0.0.4</appsuite-core.version>
+
+        <!-- appsuite-spring -->
+        <appsuite-spring.version>0.0.4</appsuite-spring.version>
+
+        <!-- lombok -->
+        <lombok.version>1.18.28</lombok.version>
+
+        <!-- swagger -->
+        <swagger.skip>false</swagger.skip>
+
+        <!-- junit-jupiter-params -->
+        <junit-jupiter-params.version>5.9.2</junit-jupiter-params.version>
+
     </properties>
 
+    <!-- dependencies -->
     <dependencies>
+
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-config-server</artifactId>
@@ -48,14 +86,82 @@
         </dependencies>
     </dependencyManagement>
 
+    <!-- build -->
     <build>
-        <finalName>Pets</finalName>
+        <!-- finalName  -->
+        <finalName>${project.artifactId}</finalName>
+
+        <!-- plugins -->
         <plugins>
+            <!-- spring-boot-maven-plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${project.parent.version}</version>
+                <!--                <configuration>-->
+                <!--                    <mainClass>${mainClassPath}</mainClass>-->
+                <!--                </configuration>-->
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- maven-compiler-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+
+            <!-- maven-checkstyle-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven-checkstyle-plugin.version}</version>
+                <configuration>
+                    <configLocation>${code-styles.dir}/checkstyle.xml</configLocation>
+                    <propertiesLocation>${code-styles.dir}/checkstyle.properties</propertiesLocation>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <configLocation>${code-styles.dir}/styles.xml</configLocation>
+                            <logViolationsToConsole>true</logViolationsToConsole>
+                            <maxAllowedViolations>${checkstyle.threshold}</maxAllowedViolations>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
+
+    <!-- reporting -->
+    <reporting>
+        <!-- plugins -->
+        <plugins>
+            <!-- maven-checkstyle-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven-checkstyle-plugin.version}</version>
+                <configuration>
+                    <configLocation>${code-styles.dir}/styles.xml</configLocation>
+                    <propertiesLocation>${code-styles.dir}/checkstyle.properties</propertiesLocation>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 
 </project>

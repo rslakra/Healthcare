@@ -3,6 +3,7 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <!-- parent -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -10,30 +11,63 @@
         <!-- lookup parent from repository -->
         <relativePath/>
     </parent>
-    <groupId>com.rslakra.springservices</groupId>
-    <artifactId>PetClinic</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <name>PetClinic</name>
+    <!-- services -->
+    <groupId>com.rslakra.healthcare</groupId>
+    <artifactId>pet-clinic</artifactId>
+    <version>${revision}</version>
+    <name>${project.artifactId}</name>
+    <description>The ${project.artifactId} Webapp</description>
 
-
+    <!-- properties -->
     <properties>
-        <!-- Generic properties -->
-        <java.version>11</java.version>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <!-- revision -->
+        <revision>0.0.0</revision>
+
+        <!-- sourceEncoding & outputEncoding -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- java version -->
+        <java.version>11</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+
+        <!-- maven plugins -->
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
+        <maven-release-plugin.version>3.0.0</maven-release-plugin.version>
+
+        <!-- checkstyle -->
+        <code-styles.dir>https://raw.githubusercontent.com/rslakra/code-styles/master</code-styles.dir>
+        <checkstyle.threshold>0</checkstyle.threshold>
+
+        <!-- appsuite-core -->
+        <appsuite-core.version>0.0.4</appsuite-core.version>
+
+        <!-- appsuite-spring -->
+        <appsuite-spring.version>0.0.4</appsuite-spring.version>
+
+        <!-- lombok -->
+        <lombok.version>1.18.28</lombok.version>
+
+        <!-- swagger -->
+        <swagger.skip>false</swagger.skip>
 
         <!-- Web dependencies -->
         <webjars-bootstrap.version>3.3.6</webjars-bootstrap.version>
         <webjars-jquery-ui.version>1.11.4</webjars-jquery-ui.version>
         <webjars-jquery.version>2.2.4</webjars-jquery.version>
         <wro4j.version>1.8.0</wro4j.version>
-
         <jacoco.version>0.8.2</jacoco.version>
+
+        <!-- junit-jupiter-params -->
+        <junit-jupiter-params.version>5.9.2</junit-jupiter-params.version>
+
     </properties>
 
+    <!-- dependencies -->
     <dependencies>
+
         <!-- Spring and Spring Boot dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -43,18 +77,22 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -110,114 +148,8 @@
             <artifactId>spring-boot-devtools</artifactId>
             <optional>true</optional>
         </dependency>
+
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>2.1.6.RELEASE</version>
-                <executions>
-                    <execution>
-                        <!--
-                        Spring Boot Actuator displays build-related information,
-                        if a META-INF/build-info.properties file is present
-                        -->
-                        <goals>
-                            <goal>build-info</goal>
-                        </goals>
-                        <configuration>
-                            <additionalProperties>
-                                <encoding.source>${project.build.sourceEncoding}</encoding.source>
-                                <encoding.reporting>${project.reporting.outputEncoding}</encoding.reporting>
-                                <java.source>${maven.compiler.source}</java.source>
-                                <java.target>${maven.compiler.target}</java.target>
-                            </additionalProperties>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${jacoco.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!--
-            Spring Boot Actuator displays build-related information,
-            if a git.properties file is present at the classpath.
-            -->
-            <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>revision</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <verbose>true</verbose>
-                    <dateFormat>yyyy-MM-dd'T'HH:mm:ssZ</dateFormat>
-                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties
-                    </generateGitPropertiesFilename>
-                    <failOnNoGitDirectory>false</failOnNoGitDirectory>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>ro.isdc.wro4j</groupId>
-                <artifactId>wro4j-maven-plugin</artifactId>
-                <version>${wro4j.version}</version>
-                <executions>
-                    <execution>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory
-                    </wroManagerFactory>
-                    <cssDestinationFolder>${project.build.directory}/classes/static/resources/css</cssDestinationFolder>
-                    <wroFile>${basedir}/src/main/wro/wro.xml</wroFile>
-                    <extraConfigFile>${basedir}/src/main/wro/wro.properties</extraConfigFile>
-                    <contextFolder>${basedir}/src/main/less</contextFolder>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.webjars</groupId>
-                        <artifactId>bootstrap</artifactId>
-                        <version>${webjars-bootstrap.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.mockito</groupId>
-                        <artifactId>mockito-core</artifactId>
-                        <version>${mockito.version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-        </plugins>
-    </build>
 
     <!-- Apache 2 license -->
     <licenses>
@@ -264,5 +196,175 @@
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
+
+
+    <!-- build -->
+    <build>
+        <!-- finalName  -->
+        <finalName>${project.artifactId}</finalName>
+
+        <!-- plugins -->
+        <plugins>
+            <!-- spring-boot-maven-plugin -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.1.6.RELEASE</version>
+                <executions>
+                    <execution>
+                        <!--
+                        Spring Boot Actuator displays build-related information,
+                        if a META-INF/build-info.properties file is present
+                        -->
+                        <goals>
+                            <goal>build-info</goal>
+                        </goals>
+                        <configuration>
+                            <additionalProperties>
+                                <encoding.source>${project.build.sourceEncoding}</encoding.source>
+                                <encoding.reporting>${project.reporting.outputEncoding}</encoding.reporting>
+                                <java.source>${maven.compiler.source}</java.source>
+                                <java.target>${maven.compiler.target}</java.target>
+                            </additionalProperties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- jacoco-maven-plugin -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--
+            Spring Boot Actuator displays build-related information,
+            if a git.properties file is present at the classpath.
+            -->
+            <!-- git-commit-id-plugin -->
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <verbose>true</verbose>
+                    <dateFormat>yyyy-MM-dd'T'HH:mm:ssZ</dateFormat>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties
+                    </generateGitPropertiesFilename>
+                    <failOnNoGitDirectory>false</failOnNoGitDirectory>
+                </configuration>
+            </plugin>
+
+            <!-- wro4j-maven-plugin -->
+            <plugin>
+                <groupId>ro.isdc.wro4j</groupId>
+                <artifactId>wro4j-maven-plugin</artifactId>
+                <version>${wro4j.version}</version>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory
+                    </wroManagerFactory>
+                    <cssDestinationFolder>${project.build.directory}/classes/static/resources/css</cssDestinationFolder>
+                    <wroFile>${basedir}/src/main/wro/wro.xml</wroFile>
+                    <extraConfigFile>${basedir}/src/main/wro/wro.properties</extraConfigFile>
+                    <contextFolder>${basedir}/src/main/less</contextFolder>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.webjars</groupId>
+                        <artifactId>bootstrap</artifactId>
+                        <version>${webjars-bootstrap.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.mockito</groupId>
+                        <artifactId>mockito-core</artifactId>
+                        <version>${mockito.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <!-- maven-compiler-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+
+            <!-- maven-checkstyle-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven-checkstyle-plugin.version}</version>
+                <configuration>
+                    <configLocation>${code-styles.dir}/checkstyle.xml</configLocation>
+                    <propertiesLocation>${code-styles.dir}/checkstyle.properties</propertiesLocation>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <configLocation>${code-styles.dir}/styles.xml</configLocation>
+                            <logViolationsToConsole>true</logViolationsToConsole>
+                            <maxAllowedViolations>${checkstyle.threshold}</maxAllowedViolations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- reporting -->
+    <reporting>
+        <!-- plugins -->
+        <plugins>
+            <!-- maven-checkstyle-plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven-checkstyle-plugin.version}</version>
+                <configuration>
+                    <configLocation>${code-styles.dir}/styles.xml</configLocation>
+                    <propertiesLocation>${code-styles.dir}/checkstyle.properties</propertiesLocation>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 
 </project>

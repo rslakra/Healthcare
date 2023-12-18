@@ -1,20 +1,17 @@
 package com.rslakra.healthcare.healthsuite.service;
 
-import java.util.List;
-
 import com.rslakra.healthcare.healthsuite.model.Activity;
 
+import java.util.List;
+
 /**
- * 
  * @author rlakra
- *
  */
 public interface ExerciseService {
 
-	/**
-	 * 
-	 * @return
-	 */
-	List<Activity> findAllActivities();
+    /**
+     * @return
+     */
+    List<Activity> findAllActivities();
 
 }
