@@ -101,13 +101,13 @@
                 <!--                <configuration>-->
                 <!--                    <mainClass>${mainClassPath}</mainClass>-->
                 <!--                </configuration>-->
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
+                <!--                <executions>-->
+                <!--                    <execution>-->
+                <!--                        <goals>-->
+                <!--                            <goal>repackage</goal>-->
+                <!--                        </goals>-->
+                <!--                    </execution>-->
+                <!--                </executions>-->
             </plugin>
 
             <!-- maven-compiler-plugin -->

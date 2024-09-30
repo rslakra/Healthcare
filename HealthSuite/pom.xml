@@ -8,6 +8,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.7.8</version>
+<!--        <version>3.1.5</version>-->
         <!-- lookup parent from repository -->
         <relativePath/>
     </parent>
@@ -98,6 +99,20 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-tomcat -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-web</artifactId>
@@ -140,10 +155,11 @@
             <version>4.2.0.Final</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
         <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>1.4.1</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.18.0</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.thoughtworks.xstream/xstream -->
@@ -182,6 +198,19 @@
         <!-- plugins -->
         <plugins>
             <!-- spring-boot-maven-plugin -->
+            <!--
+            Once 'spring-boot-maven-plugin' has been included in your pom.xml, it automatically tries to rewrite
+            archives to make them executable by using the 'spring-boot:repackage' goal. You should configure your
+            project to build a jar or war (as appropriate) by using the usual 'packaging' element.
+
+            The main class that you want to launch can be specified either by using a configuration option or by adding
+            a 'Main-Class' attribute to the manifest in the usual way. If you do not specify a main class, the plugin
+            searches for a class with a 'public static void main(String[] args)' method.
+
+            To build a war file that is both executable and deployable into an external container, you need to mark
+            the embedded container dependencies as “provided”.
+
+            -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
