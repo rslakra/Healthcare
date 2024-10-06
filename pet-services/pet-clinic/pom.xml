@@ -105,10 +105,12 @@
             <artifactId>hsqldb</artifactId>
             <scope>runtime</scope>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.mysql/mysql-connector-j -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <scope>runtime</scope>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>8.2.0</version>
         </dependency>
 
         <!-- caching -->
