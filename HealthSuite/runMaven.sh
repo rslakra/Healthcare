@@ -1,5 +1,5 @@
 #!/bin/bash
-#Author:Rohtash Lakra
+#Author: Rohtash Lakra
 clear
 #echo
 #JAVA_VERSION=11
