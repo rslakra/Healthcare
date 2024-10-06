@@ -53,6 +53,9 @@
         <!-- swagger -->
         <swagger.skip>false</swagger.skip>
 
+        <!-- hsqldb -->
+        <hsqldb.version>2.7.3</hsqldb.version>
+
         <!-- Web dependencies -->
         <webjars-bootstrap.version>3.3.6</webjars-bootstrap.version>
         <webjars-jquery-ui.version>1.11.4</webjars-jquery-ui.version>
@@ -100,9 +103,11 @@
         </dependency>
 
         <!-- Databases - Uses HSQL by default -->
+        <!-- https://mvnrepository.com/artifact/org.hsqldb/hsqldb -->
         <dependency>
             <groupId>org.hsqldb</groupId>
             <artifactId>hsqldb</artifactId>
+            <version>${hsqldb.version}</version>
             <scope>runtime</scope>
         </dependency>
 
