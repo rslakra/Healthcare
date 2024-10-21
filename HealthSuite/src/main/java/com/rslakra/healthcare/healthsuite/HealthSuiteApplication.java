@@ -7,7 +7,6 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 /**
- *
  * Static resources can be moved to /public (or /static or /resources or /META-INF/resources) in the classpath root.
  * The same applies to messages.properties (which Spring Boot automatically detects in the root of the classpath).
  */
@@ -15,8 +14,11 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 @SpringBootApplication
 public class HealthSuiteApplication extends SpringBootServletInitializer {
 
-
-    //comment below if deploying outside web container -->
+    /**
+     * comment below if deploying outside web container
+     * @param builder
+     * @return
+     */
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
         return configureApplication(builder);
@@ -29,4 +31,5 @@ public class HealthSuiteApplication extends SpringBootServletInitializer {
     public static void main(String[] args) {
         SpringApplication.run(HealthSuiteApplication.class);
     }
+
 }
