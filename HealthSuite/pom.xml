@@ -29,14 +29,14 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- java version -->
-        <java.version>23</java.version>
+        <java.version>21</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
 
         <!-- maven plugins -->
-        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-        <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
-        <maven-release-plugin.version>3.0.0</maven-release-plugin.version>
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <maven-checkstyle-plugin.version>3.5.0</maven-checkstyle-plugin.version>
+        <maven-release-plugin.version>3.1.1</maven-release-plugin.version>
 
         <!-- checkstyle -->
         <code-styles.dir>https://raw.githubusercontent.com/rslakra/code-styles/master</code-styles.dir>
@@ -58,11 +58,11 @@
         <commons-csv.version>1.9.0</commons-csv.version>
         <opencsv.version>5.7.0</opencsv.version>
         <!-- excel parser version -->
-        <poi.version>5.2.3</poi.version>
-        <poi-ooxml.version>5.2.3</poi-ooxml.version>
+        <poi.version>5.4.0</poi.version>
+        <poi-ooxml.version>5.4.0</poi-ooxml.version>
 
         <!-- junit-jupiter-params -->
-        <junit-jupiter-params.version>5.9.2</junit-jupiter-params.version>
+        <junit-jupiter-params.version>5.10.2</junit-jupiter-params.version>
 
     </properties>
 
