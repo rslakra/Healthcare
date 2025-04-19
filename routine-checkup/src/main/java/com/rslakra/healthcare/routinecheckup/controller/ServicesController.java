@@ -27,15 +27,13 @@ import java.util.List;
 public class ServicesController {
 
     private final ServiceScheduleService serviceScheduleService;
-
     private final Messages messages;
-
-    private final List<String> SERVICES = Arrays.asList("on_house", "online");
+    private final List<String> services = Arrays.asList("on_house", "online");
 
     @GetMapping(value = ViewNames.SERVICES_URL)
     public String servicesView(
-        @RequestParam("act_type") String actionType,
-        Model model
+            @RequestParam("act_type") String actionType,
+            Model model
     ) {
         validateServiceType(actionType);
 
@@ -48,9 +46,9 @@ public class ServicesController {
 
     @PostMapping(value = ViewNames.SERVICES_URL)
     public String saveService(
-        @ModelAttribute(ModelAttributesNames.SERVICE_DATA)
+            @ModelAttribute(ModelAttributesNames.SERVICE_DATA)
             ServiceDataDto serviceDataDto,
-        Principal principal
+            Principal principal
     ) {
         validateServiceType(serviceDataDto.getServiceType());
 
@@ -61,9 +59,9 @@ public class ServicesController {
     }
 
     private void validateServiceType(String type) {
-        if (!SERVICES.contains(type)) {
+        if (!services.contains(type)) {
             String message
-                = String.format(messages.getUnknownServiceTemplate(), type);
+                    = String.format(messages.getUnknownServiceTemplate(), type);
             throw new UnknownServiceException(message);
         }
     }

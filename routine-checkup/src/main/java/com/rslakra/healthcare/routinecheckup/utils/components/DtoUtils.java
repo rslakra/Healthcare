@@ -11,13 +11,24 @@ import com.rslakra.healthcare.routinecheckup.entity.DoctorEntity;
 import com.rslakra.healthcare.routinecheckup.entity.PatientEntity;
 import com.rslakra.healthcare.routinecheckup.entity.ServiceScheduleEntity;
 import com.rslakra.healthcare.routinecheckup.entity.UserEntity;
+import org.owasp.encoder.Encode;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Objects;
 
 /**
  * @author Rohtash Lakra
  * @created 8/12/21 4:43 PM
  */
 public interface DtoUtils {
+
+    /**
+     * @param input
+     * @return
+     */
+    default String forHtmlNullSafe(String input) {
+        return Objects.isNull(input) ? null : Encode.forHtml(input);
+    }
 
     UserDetails getUserDetails(UserEntity userEntity);
 

@@ -32,8 +32,8 @@ public class ServiceScheduleServiceImpl implements ServiceScheduleService {
     @Override
     @Transactional
     public ServiceDataDto saveService(
-        ServiceDataDto serviceDataDto,
-        String login
+            ServiceDataDto serviceDataDto,
+            String login
     ) {
         if (StringUtils.isEmpty(serviceDataDto.getServiceType())) {
             throw new IncorrectServiceException("Empty type!");
@@ -56,10 +56,10 @@ public class ServiceScheduleServiceImpl implements ServiceScheduleService {
     public ServiceDataDto getService(UUID id, String login) {
         UserEntity user = userService.getUserEntityByLogin(login);
         Optional<ServiceScheduleEntity> serviceOpt
-            = serviceScheduleRepository.findByIdAndUser(id, user);
+                = serviceScheduleRepository.findByIdAndUser(id, user);
 
         ServiceScheduleEntity service = serviceOpt.orElseThrow(
-            () -> new ServiceNotFoundException("Service not found!")
+                () -> new ServiceNotFoundException("Service not found!")
         );
         ServiceDataDto result = dtoUtils.convertService(service);
         return result;

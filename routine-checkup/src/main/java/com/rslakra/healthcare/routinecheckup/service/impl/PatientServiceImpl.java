@@ -28,11 +28,8 @@ import java.util.UUID;
 public class PatientServiceImpl implements PatientService {
 
     private final PatientRepository patientRepository;
-
     private final UserService userService;
-
     private final Messages messages;
-
     private final DtoUtils dtoUtils;
 
     @Override
@@ -47,13 +44,13 @@ public class PatientServiceImpl implements PatientService {
     @Override
     @Transactional
     public PatientResponseDto savePatient(
-        PatientRequestDto patientRequestDto,
-        String currentUserLogin
+            PatientRequestDto patientRequestDto,
+            String currentUserLogin
     ) {
         PatientRequestDto sanitizedPatient
-            = dtoUtils.sanitizePatient(patientRequestDto);
+                = dtoUtils.sanitizePatient(patientRequestDto);
         PatientEntity patientEntity
-            = dtoUtils.convertPatient(sanitizedPatient);
+                = dtoUtils.convertPatient(sanitizedPatient);
         validatePatientBelongsToUser(patientEntity, currentUserLogin);
 
         PatientEntity saved = patientRepository.save(patientEntity);
@@ -65,17 +62,17 @@ public class PatientServiceImpl implements PatientService {
     @Override
     @Transactional
     public PatientResponseDto updatePatient(
-        PatientRequestDto patientRequestDto,
-        String currentUserLogin
+            PatientRequestDto patientRequestDto,
+            String currentUserLogin
     ) {
         PatientRequestDto sanitizedPatient
-            = dtoUtils.sanitizePatient(patientRequestDto);
+                = dtoUtils.sanitizePatient(patientRequestDto);
         PatientEntity old
-            = findById(UUID.fromString(sanitizedPatient.getId()));
+                = findById(UUID.fromString(sanitizedPatient.getId()));
         validatePatientBelongsToUser(old, currentUserLogin);
 
         PatientEntity patientEntity
-            = dtoUtils.convertPatient(sanitizedPatient);
+                = dtoUtils.convertPatient(sanitizedPatient);
         PatientEntity toUpdate = dtoUtils.merge(old, patientEntity);
         patientEntity.getUserEntity().setId(old.getUserEntity().getId());
 
@@ -87,11 +84,11 @@ public class PatientServiceImpl implements PatientService {
 
     private PatientEntity findById(UUID id) {
         Optional<PatientEntity> patientOptional
-            = patientRepository.findById(id);
+                = patientRepository.findById(id);
         PatientEntity result = patientOptional.orElseThrow(() -> {
-                                                               String message = messages.getPatientHaveNotAccess();
-                                                               return new UserNotFoundException(message);
-                                                           }
+                    String message = messages.getPatientHaveNotAccess();
+                    return new UserNotFoundException(message);
+                }
         );
 
         return result;

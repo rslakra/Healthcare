@@ -15,15 +15,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.security.Principal;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Pattern;
+import java.security.Principal;
 
 /**
  * @author Rohtash Lakra
@@ -37,13 +32,13 @@ public class DoctorController {
 
     @GetMapping(ViewNames.UPDATE_DOCTOR_URL)
     public String updateDoctorView(
-        @RequestParam("id")
-        @Pattern(regexp = Patterns.UUID_PATTERN)
+            @RequestParam("id")
+            @Pattern(regexp = Patterns.UUID_PATTERN)
             String doctorId,
-        Model model
+            Model model
     ) {
         DoctorResponseDto doctor = doctorService.findDoctorById(
-            doctorId
+                doctorId
         );
 
         model.addAttribute(ModelAttributesNames.DOCTOR_OBJECT_NAME, doctor);
@@ -53,28 +48,16 @@ public class DoctorController {
 
     @PutMapping(ViewNames.UPDATE_DOCTOR_URL)
     @ResponseBody
-    public DoctorResponseDto updateDoctor(
-        @RequestBody
-        @Validated(UpdateDoctorValidationGroup.class)
-        DoctorRequestDto doctorRequestDto,
-        Principal principal
-    ) {
+    public DoctorResponseDto updateDoctor(@RequestBody @Validated(UpdateDoctorValidationGroup.class) DoctorRequestDto doctorRequestDto, Principal principal) {
         String login = principal.getName();
-        DoctorResponseDto result = doctorService.updateDoctor(
-            doctorRequestDto,
-            login
-        );
+        DoctorResponseDto result = doctorService.updateDoctor(doctorRequestDto, login);
 
         return result;
     }
 
     @GetMapping(ViewNames.SEARCH_DOCTOR_URL)
-    public String searchDoctors(
-        @RequestParam(value = "searchStr", required = false) String search,
-        Model model
-    ) {
+    public String searchDoctors(@RequestParam(value = "searchStr", required = false) String search, Model model) {
         FoundedDoctorsDto dto = new FoundedDoctorsDto();
-
         if (StringUtils.hasText(search)) {
             dto.setDoctors(doctorService.searchDoctor(search.trim()));
             String sanitizedSearchString = Encode.forHtml(search);

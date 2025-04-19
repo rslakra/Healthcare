@@ -9,11 +9,12 @@ import com.rslakra.healthcare.routinecheckup.entity.UserEntity;
 import io.jsonwebtoken.impl.DefaultClaims;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
-
 public interface TokenComponent {
+
+    Integer MILLIS_IN_SECOND = 1000;
 
     String generateRegistrationToken(UserEntity userEntity);
 

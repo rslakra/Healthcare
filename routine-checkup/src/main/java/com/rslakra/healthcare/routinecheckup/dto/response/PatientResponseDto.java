@@ -20,8 +20,7 @@ import java.util.Date;
 @Builder
 public class PatientResponseDto {
 
-    private final static SimpleDateFormat DATE_FORMAT
-        = new SimpleDateFormat("yyyy-MM-dd");
+    private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     @JsonProperty("id")
     private String id;
@@ -35,7 +34,7 @@ public class PatientResponseDto {
     @JsonProperty("end_time_of_illness")
     private Date endTimeOfIllness;
 
-    @JsonProperty("firest_name")
+    @JsonProperty("first_name")
     private String firstName;
 
     @JsonProperty("last_name")
@@ -49,8 +48,8 @@ public class PatientResponseDto {
         if (diseaseOnsetTime == null) {
             return null;
         }
-        String result = DATE_FORMAT.format(diseaseOnsetTime);
-        return result;
+
+        return DATE_FORMAT.format(diseaseOnsetTime);
     }
 
     public String getEndTimeOfIllnessFormatted() {
@@ -58,8 +57,8 @@ public class PatientResponseDto {
         if (endTimeOfIllness == null) {
             return null;
         }
-        String result = DATE_FORMAT.format(getEndTimeOfIllness());
-        return result;
+
+        return DATE_FORMAT.format(getEndTimeOfIllness());
     }
 
 }

@@ -18,8 +18,8 @@ import java.util.UUID;
 public interface DoctorRepository extends CrudRepository<DoctorEntity, UUID> {
 
     @Query("from DoctorEntity d where d.speciality like %:search% or "
-           + "concat(d.userEntity.lastName, ' ', d.userEntity.firstName) like %:search% or "
-           + "concat(d.userEntity.lastName, ' ', d.userEntity.firstName) like %:search%")
+            + "concat(d.userEntity.lastName, ' ', d.userEntity.firstName) like %:search% or "
+            + "concat(d.userEntity.lastName, ' ', d.userEntity.firstName) like %:search%")
     List<DoctorEntity> findAllBySearchString(@Param("search") String search);
 
 }

@@ -10,11 +10,10 @@ import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.DefaultCsrfToken;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-import java.util.UUID;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
+import java.util.UUID;
 
 /**
  * @author Rohtash Lakra
@@ -25,31 +24,20 @@ import javax.servlet.http.HttpServletResponse;
 public class CustomCsrfTokenRepository implements CsrfTokenRepository {
 
     private final TokenComponent tokenComponent;
-
     private final CsrfConstants csrfConstants;
-
     private final UserCsrfTokenRepository userCsrfTokenRepository;
 
     @Override
     public CsrfToken generateToken(HttpServletRequest request) {
         String tokenString = UUID.randomUUID().toString();
-        CsrfToken token = new DefaultCsrfToken(
-            csrfConstants.getCsrfHeaderName(),
-            csrfConstants.getCsrfParameterName(),
-            tokenString
-        );
+        CsrfToken token = new DefaultCsrfToken(csrfConstants.getCsrfHeaderName(), csrfConstants.getCsrfParameterName(), tokenString);
 
         return token;
     }
 
     @Override
-    public void saveToken(
-        CsrfToken token,
-        HttpServletRequest request,
-        HttpServletResponse response
-    ) {
-        Optional<String> jwtOpt
-            = tokenComponent.getTokenFromRequest(request);
+    public void saveToken(CsrfToken token, HttpServletRequest request, HttpServletResponse response) {
+        Optional<String> jwtOpt = tokenComponent.getTokenFromRequest(request);
         if (!jwtOpt.isPresent()) {
             return;
         }
@@ -60,15 +48,13 @@ public class CustomCsrfTokenRepository implements CsrfTokenRepository {
 
     @Override
     public CsrfToken loadToken(HttpServletRequest request) {
-        Optional<String> jwtOpt
-            = tokenComponent.getTokenFromRequest(request);
+        Optional<String> jwtOpt = tokenComponent.getTokenFromRequest(request);
         if (!jwtOpt.isPresent()) {
             return null;
         }
         String jwt = jwtOpt.get();
 
-        Optional<UserCsrfToken> csrfOpt
-            = userCsrfTokenRepository.findById(jwt);
+        Optional<UserCsrfToken> csrfOpt = userCsrfTokenRepository.findById(jwt);
         if (!csrfOpt.isPresent()) {
             return null;
         }

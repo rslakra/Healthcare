@@ -18,17 +18,15 @@ import javax.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 public class InternalExceptionResolver extends AbstractHandlerExceptionResolver {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(InternalExceptionResolver.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InternalExceptionResolver.class);
     private final Messages messages;
 
     @Override
-    protected ModelAndView doResolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
-                                              Exception ex) {
+    protected ModelAndView doResolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         if (isAnnotatedByResponseStatus(ex)) {
             return null;
         }
         LOGGER.error(ex.getMessage(), ex);
-
         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 
         MappingJackson2JsonView view = new MappingJackson2JsonView();

@@ -13,15 +13,9 @@ public interface DoctorService {
 
     DoctorResponseDto findDoctorById(String id);
 
-    DoctorResponseDto saveDoctor(
-        DoctorRequestDto doctor,
-        String currentUserLogin
-    );
+    DoctorResponseDto saveDoctor(DoctorRequestDto doctor, String currentUserLogin);
 
-    DoctorResponseDto updateDoctor(
-        DoctorRequestDto doctor,
-        String currentUserLogin
-    );
+    DoctorResponseDto updateDoctor(DoctorRequestDto doctor, String currentUserLogin);
 
     List<DoctorResponseDto> getAllDoctors();
 

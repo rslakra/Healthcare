@@ -12,15 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.security.Principal;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 
 /**
  * @author Rohtash Lakra
@@ -30,75 +25,38 @@ import javax.servlet.http.HttpServletRequest;
 @RequiredArgsConstructor
 public class RegistrationController {
 
+    private static final String CAPTCHA_RESPONSE_PARAM_NAME = "g-recaptcha-response";
     private final CaptchaConstants captchaConstants;
-
     private final UserService userService;
-
-    private final UserRegistrationAttemptsService
-        userRegistrationAttemptsService;
-
-    private final String CAPTCHA_RESPONSE_PARAM_NAME = "g-recaptcha-response";
+    private final UserRegistrationAttemptsService userRegistrationAttemptsService;
 
     @GetMapping(value = ViewNames.REGISTRATION_URL)
-    public String registrationView(
-        Model model,
-        HttpServletRequest request,
-        Principal principal
-    ) {
+    public String registrationView(Model model, HttpServletRequest request, Principal principal) {
         if (principal != null) {
             return "redirect:" + ViewNames.DOCTORS_AND_PATIENTS_LIST_URL;
         }
 
-        model.addAttribute(
-            ModelAttributesNames.REGISTRATION_DTO,
-            new UserRequestDto()
-        );
-
-        model.addAttribute(
-            ModelAttributesNames.CAPTCHA_SITE_KEY,
-            captchaConstants.getSiteKey()
-        );
+        model.addAttribute(ModelAttributesNames.REGISTRATION_DTO, new UserRequestDto());
+        model.addAttribute(ModelAttributesNames.CAPTCHA_SITE_KEY, captchaConstants.getSiteKey());
 
         String userIp = request.getRemoteAddr();
-        boolean extraCurrentRegistration
-            = userRegistrationAttemptsService
-            .isExtraCurrentRegistration(userIp);
-        model.addAttribute(
-            ModelAttributesNames.IS_EXTRA_REGISTRATION,
-            extraCurrentRegistration
-        );
+        boolean extraCurrentRegistration = userRegistrationAttemptsService.isExtraCurrentRegistration(userIp);
+        model.addAttribute(ModelAttributesNames.IS_EXTRA_REGISTRATION, extraCurrentRegistration);
 
         return ViewNames.REGISTRATION_VIEW_NAME;
     }
 
     @GetMapping(value = ViewNames.REGISTRATION_URL + "/{registration_token}")
-    public String completeRegistration(
-        @PathVariable("registration_token") String registrationToken
-    ) {
+    public String completeRegistration(@PathVariable("registration_token") String registrationToken) {
         userService.completeRegistration(registrationToken);
 
         return "redirect:" + ViewNames.LOGIN_URL;
     }
 
     @PostMapping(value = ViewNames.REGISTRATION_URL)
-    public String registration(
-        @ModelAttribute(ModelAttributesNames.REGISTRATION_DTO)
-        @Validated(CreateUserValidationGroup.class)
-            UserRequestDto userRequestDto,
-        @RequestParam(
-            value = CAPTCHA_RESPONSE_PARAM_NAME,
-            required = false
-        )
-            String captchaResponse,
-        HttpServletRequest request
-    ) {
+    public String registration(@ModelAttribute(ModelAttributesNames.REGISTRATION_DTO) @Validated(CreateUserValidationGroup.class) UserRequestDto userRequestDto, @RequestParam(value = CAPTCHA_RESPONSE_PARAM_NAME, required = false) String captchaResponse, HttpServletRequest request) {
         String userIp = request.getRemoteAddr();
-        userService.registerNewUser(
-            userRequestDto,
-            captchaResponse,
-            RoleNames.USER,
-            userIp
-        );
+        userService.registerNewUser(userRequestDto, captchaResponse, RoleNames.USER, userIp);
 
         return ViewNames.PRE_COMPLETE_REGISTRATION_VIEW_NAME;
     }

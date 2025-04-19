@@ -13,10 +13,9 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.regex.Pattern;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Rohtash Lakra
@@ -24,23 +23,17 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Component
 @RequiredArgsConstructor
-public class ReCaptchaApproveComponentImpl
-    implements ReCaptchaApproveComponent {
+public class ReCaptchaApproveComponentImpl implements ReCaptchaApproveComponent {
 
+    private static final Pattern RESPONSE_PATTERN = Pattern.compile("[A-Za-z0-9_-]+");
     private final RestOperations restOperations;
-
     private final CaptchaConstants captchaConstants;
-
     private final Messages messages;
-
-    private final Pattern RESPONSE_PATTERN = Pattern.compile("[A-Za-z0-9_-]+");
 
     @Override
     public void approve(String captchaResponse) {
         validateResponse(captchaResponse);
-
-        ReCaptchaGoogleResponse googleResponse
-            = getCaptchaGoogleResponse(captchaResponse);
+        ReCaptchaGoogleResponse googleResponse = getCaptchaGoogleResponse(captchaResponse);
 
         String[] errorCodes = googleResponse.getErrorCodes();
         if (errorCodes != null && errorCodes.length > 0) {
@@ -48,45 +41,22 @@ public class ReCaptchaApproveComponentImpl
         }
     }
 
-    private ReCaptchaGoogleResponse getCaptchaGoogleResponse(
-        String captchaResponse
-    ) {
-        URI uri = UriComponentsBuilder
-            .fromUriString(captchaConstants.getRecaptchaUrl())
-            .queryParam(
-                captchaConstants.getSecretKeyParamName(),
-                captchaConstants.getSecretKey()
-            )
-            .queryParam(
-                captchaConstants.getCaptchaResponseParamName(),
-                captchaResponse
-            )
-            .queryParam(
-                captchaConstants.getRemoteIpParamName(),
-                getUserIp()
-            )
-            .build()
-            .toUri();
+    private ReCaptchaGoogleResponse getCaptchaGoogleResponse(String captchaResponse) {
+        URI uri = UriComponentsBuilder.fromUriString(captchaConstants.getRecaptchaUrl()).queryParam(captchaConstants.getSecretKeyParamName(), captchaConstants.getSecretKey()).queryParam(captchaConstants.getCaptchaResponseParamName(), captchaResponse).queryParam(captchaConstants.getRemoteIpParamName(), getUserIp()).build().toUri();
+        ReCaptchaGoogleResponse result = restOperations.getForObject(uri, ReCaptchaGoogleResponse.class);
 
-        ReCaptchaGoogleResponse result = restOperations.getForObject(
-            uri,
-            ReCaptchaGoogleResponse.class
-        );
         return result;
     }
 
     private boolean validateResponse(String response) {
-        return StringUtils.hasLength(response)
-               && RESPONSE_PATTERN.matcher(response).matches();
+        return StringUtils.hasLength(response) && RESPONSE_PATTERN.matcher(response).matches();
     }
 
     private String getUserIp() {
-        ServletRequestAttributes attribute =
-            (ServletRequestAttributes) RequestContextHolder
-                .currentRequestAttributes();
+        ServletRequestAttributes attribute = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = attribute.getRequest();
-
         String result = request.getRemoteAddr();
+
         return result;
     }
 }

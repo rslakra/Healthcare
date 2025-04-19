@@ -16,13 +16,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * @author Rohtash Lakra
@@ -33,54 +32,37 @@ import javax.validation.constraints.NotNull;
 public class DoctorServiceImpl implements DoctorService {
 
     private final DoctorRepository doctorRepository;
-
     private final Messages messages;
-
     private final DtoUtils dtoUtils;
-
     private final UserService userService;
 
     @Override
     @Transactional(readOnly = true)
     public DoctorResponseDto findDoctorById(@NotNull String id) {
         DoctorEntity doctor = findById(UUID.fromString(id));
-
         DoctorResponseDto result = dtoUtils.convertDoctor(doctor);
         return result;
     }
 
     @Override
     @Transactional
-    public DoctorResponseDto saveDoctor(
-        DoctorRequestDto doctor,
-        String currentUserLogin
-    ) {
-        DoctorRequestDto sanitizedDoctor
-            = dtoUtils.sanitizeDoctor(doctor);
-        DoctorEntity doctorEntity
-            = dtoUtils.convertDoctor(sanitizedDoctor);
+    public DoctorResponseDto saveDoctor(DoctorRequestDto doctor, String currentUserLogin) {
+        DoctorRequestDto sanitizedDoctor = dtoUtils.sanitizeDoctor(doctor);
+        DoctorEntity doctorEntity = dtoUtils.convertDoctor(sanitizedDoctor);
         validateDoctorBelongsToUser(doctorEntity, currentUserLogin);
-
         DoctorEntity saved = doctorRepository.save(doctorEntity);
-
         DoctorResponseDto result = dtoUtils.convertDoctor(saved);
         return result;
     }
 
     @Override
     @Transactional
-    public DoctorResponseDto updateDoctor(
-        DoctorRequestDto doctor,
-        String currentUserLogin
-    ) {
-        DoctorRequestDto sanitizedDoctor
-            = dtoUtils.sanitizeDoctor(doctor);
-        DoctorEntity old
-            = findById(UUID.fromString(sanitizedDoctor.getId()));
+    public DoctorResponseDto updateDoctor(DoctorRequestDto doctor, String currentUserLogin) {
+        DoctorRequestDto sanitizedDoctor = dtoUtils.sanitizeDoctor(doctor);
+        DoctorEntity old = findById(UUID.fromString(sanitizedDoctor.getId()));
         validateDoctorBelongsToUser(old, currentUserLogin);
 
-        DoctorEntity doctorEntity
-            = dtoUtils.convertDoctor(sanitizedDoctor);
+        DoctorEntity doctorEntity = dtoUtils.convertDoctor(sanitizedDoctor);
         DoctorEntity toUpdate = dtoUtils.merge(old, doctorEntity);
         doctorEntity.getUserEntity().setId(old.getUserEntity().getId());
 
@@ -95,9 +77,9 @@ public class DoctorServiceImpl implements DoctorService {
     public List<DoctorResponseDto> getAllDoctors() {
         Iterable<DoctorEntity> allDoctors = doctorRepository.findAll();
         List<DoctorResponseDto> result
-            = StreamSupport.stream(allDoctors.spliterator(), false)
-            .map(dtoUtils::convertDoctor)
-            .collect(Collectors.toList());
+                = StreamSupport.stream(allDoctors.spliterator(), false)
+                .map(dtoUtils::convertDoctor)
+                .collect(Collectors.toList());
 
         return result;
     }
@@ -105,8 +87,8 @@ public class DoctorServiceImpl implements DoctorService {
     @Transactional(readOnly = true)
     @Override
     public void validateDoctorBelongsToUser(
-        String doctorId,
-        String userLogin
+            String doctorId,
+            String userLogin
     ) {
         DoctorEntity doctorEntity = findById(UUID.fromString(doctorId));
         validateDoctorBelongsToUser(doctorEntity, userLogin);
@@ -115,17 +97,17 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public List<DoctorResponseDto> searchDoctor(String searchString) {
         List<DoctorEntity> allBySearchString
-            = doctorRepository.findAllBySearchString(searchString);
+                = doctorRepository.findAllBySearchString(searchString);
 
         List<DoctorResponseDto> result = allBySearchString.stream()
-            .map(dtoUtils::convertDoctor)
-            .collect(Collectors.toList());
+                .map(dtoUtils::convertDoctor)
+                .collect(Collectors.toList());
         return result;
     }
 
     private DoctorEntity findById(UUID id) {
         Optional<DoctorEntity> doctorOptional
-            = doctorRepository.findById(id);
+                = doctorRepository.findById(id);
         DoctorEntity result = doctorOptional.orElseThrow(() -> {
             String message = messages.getDoctorHaveNotAccess();
             return new UserNotFoundException(message);
@@ -135,13 +117,13 @@ public class DoctorServiceImpl implements DoctorService {
     }
 
     private void validateDoctorBelongsToUser(
-        DoctorEntity doctorEntity,
-        String userLogin
+            DoctorEntity doctorEntity,
+            String userLogin
     ) {
         UserEntity userByLogin
-            = userService.getUserEntityByLogin(userLogin);
+                = userService.getUserEntityByLogin(userLogin);
         if (RoleNames.ADMIN.getValue().equals(
-            userByLogin.getRole().getRoleName()
+                userByLogin.getRole().getRoleName()
         )) {
             return;
         }

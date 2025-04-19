@@ -13,32 +13,28 @@ import java.util.UUID;
 public interface UserDtoEntityMapper {
 
     @Mappings({
-        @Mapping(
-            target = "id",
-            expression = "java( dto.getId() == null" +
-                         " ? null" +
-                         " : UUID.fromString(dto.getId()) )"
-        ),
-        @Mapping(target = "login", source = "dto.login"),
-        @Mapping(target = "password", source = "password"),
-        @Mapping(target = "firstName", source = "dto.firstName"),
-        @Mapping(target = "lastName", source = "dto.lastName"),
-        @Mapping(target = "mail", source = "dto.mail")
+            @Mapping(
+                    target = "id",
+                    expression = "java(dto.getId() == null ? null : UUID.fromString(dto.getId()))"
+            ),
+            @Mapping(target = "login", source = "dto.login"),
+            @Mapping(target = "password", source = "dto.password"),
+            @Mapping(target = "firstName", source = "dto.firstName"),
+            @Mapping(target = "lastName", source = "dto.lastName"),
+            @Mapping(target = "mail", source = "dto.mail")
     })
     UserEntity userRequestDtoToUserEntity(UserRequestDto dto);
 
     @Mappings({
-        @Mapping(
-            target = "id",
-            expression = "java( entity.getId() == null" +
-                         " ? null" +
-                         " : entity.getId().toString() )"
-        ),
-        @Mapping(target = "login", source = "entity.login"),
-        @Mapping(target = "firstName", source = "entity.firstName"),
-        @Mapping(target = "lastName", source = "entity.lastName"),
-        @Mapping(target = "doctorsIds", ignore = true),
-        @Mapping(target = "patientsIds", ignore = true)
+            @Mapping(
+                    target = "id",
+                    expression = "java(entity.getId() == null ? null : entity.getId().toString())"
+            ),
+            @Mapping(target = "login", source = "entity.login"),
+            @Mapping(target = "firstName", source = "entity.firstName"),
+            @Mapping(target = "lastName", source = "entity.lastName"),
+            @Mapping(target = "doctorsIds", ignore = true),
+            @Mapping(target = "patientsIds", ignore = true)
     })
     UserResponseDto userEntityToUserResponseDto(UserEntity entity);
 

@@ -23,21 +23,25 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MonthlyReportsServiceImpl implements MonthlyReportsService {
 
-    private final Messages messages;
+    private static final String[] FILE_EXTENSIONS_ALLOWLIST = {
+            "doc",
+            "docx"
+    };
 
+    private static final String[] MIME_TYPE_ALLOWLIST = {
+            "application/msword",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml" +
+                    ".document"
+    };
+
+    private final Messages messages;
     private final FileComponent fileComponent;
 
-    private final String[] FILE_EXTENSIONS_ALLOWLIST = {
-        "doc",
-        "docx"
-    };
-
-    private final String[] MIME_TYPE_ALLOWLIST = {
-        "application/msword",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml" +
-        ".document"
-    };
-
+    /**
+     * @param file
+     * @param login
+     * @return
+     */
     @Override
     public String saveReport(MultipartFile file, String login) {
         String extension = fileComponent.getExtension(file);
@@ -52,11 +56,20 @@ public class MonthlyReportsServiceImpl implements MonthlyReportsService {
         }
     }
 
+    /**
+     * @param fileName
+     * @param login
+     */
     @Override
     public void deleteReport(String fileName, String login) {
         fileComponent.delete(fileName, login);
     }
 
+    /**
+     * @param dto
+     * @param login
+     * @return
+     */
     @Override
     public String renameReport(UpdateMonthlyReportRequestDto dto, String login) {
         String newName = dto.getNewName();
@@ -64,47 +77,45 @@ public class MonthlyReportsServiceImpl implements MonthlyReportsService {
         validateExtension(extension);
 
         String oldName = dto.getOldName();
-        UserFileEntity renamed
-            = fileComponent.rename(oldName, newName, login);
+        UserFileEntity renamed = fileComponent.rename(oldName, newName, login);
         return renamed.getOriginalFileName();
     }
 
+    /**
+     * @param login
+     * @return
+     */
     @Override
     public List<String> getAllReportsNames(String login) {
-        List<UserFileEntity> allUserFiles
-            = fileComponent.getAllUserFiles(login);
+        List<UserFileEntity> allUserFiles = fileComponent.getAllUserFiles(login);
         List<String> result = allUserFiles.stream()
-            .map(UserFileEntity::getOriginalFileName)
-            .collect(Collectors.toList());
+                .map(UserFileEntity::getOriginalFileName)
+                .collect(Collectors.toList());
+
         return result;
     }
 
     @Override
     public String getReportName(String reportName, String login) {
-        UserFileEntity userFile
-            = fileComponent.getUserFile(reportName, login);
+        UserFileEntity userFile = fileComponent.getUserFile(reportName, login);
         return userFile.getOriginalFileName();
     }
 
     private void validateMimeType(String mimeType) {
         boolean isCorrectMimeType = Arrays.stream(MIME_TYPE_ALLOWLIST)
-            .anyMatch(t -> t.equals(mimeType));
+                .anyMatch(t -> t.equals(mimeType));
 
         if (!isCorrectMimeType) {
-            throw new IncorrectFIleException(
-                messages.getIncorrectFileType()
-            );
+            throw new IncorrectFIleException(messages.getIncorrectFileType());
         }
     }
 
     private void validateExtension(String extension) {
         boolean isCorrectExtension = Arrays.stream(FILE_EXTENSIONS_ALLOWLIST)
-            .anyMatch(e -> e.equals(extension));
+                .anyMatch(e -> e.equals(extension));
 
         if (!isCorrectExtension) {
-            throw new IncorrectFIleException(
-                messages.getIncorrectFileType()
-            );
+            throw new IncorrectFIleException(messages.getIncorrectFileType());
         }
     }
 }

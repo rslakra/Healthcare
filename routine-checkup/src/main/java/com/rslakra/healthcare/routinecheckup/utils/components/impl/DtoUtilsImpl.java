@@ -17,7 +17,6 @@ import com.rslakra.healthcare.routinecheckup.utils.mappers.PatientDtoToEntityMap
 import com.rslakra.healthcare.routinecheckup.utils.mappers.ServiceScheduleDtoEntityMapper;
 import com.rslakra.healthcare.routinecheckup.utils.mappers.UserDtoEntityMapper;
 import lombok.RequiredArgsConstructor;
-import org.owasp.encoder.Encode;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -43,14 +42,14 @@ public class DtoUtilsImpl implements DtoUtils {
     @Override
     public UserDetails getUserDetails(UserEntity userEntity) {
         UserDetails userDetails = User.builder()
-            .username(userEntity.getLogin())
-            .password(userEntity.getPassword())
-            .roles(userEntity.getRole().getRoleName())
-            .accountExpired(false)
-            .accountLocked(false)
-            .credentialsExpired(false)
-            .disabled(false)
-            .build();
+                .username(userEntity.getLogin())
+                .password(userEntity.getPassword())
+                .roles(userEntity.getRole().getRoleName())
+                .accountExpired(false)
+                .accountLocked(false)
+                .credentialsExpired(false)
+                .disabled(false)
+                .build();
 
         return userDetails;
     }
@@ -66,21 +65,18 @@ public class DtoUtilsImpl implements DtoUtils {
         doctors = doctors == null ? new ArrayList<>() : doctors;
 
         List<PatientEntity> patients = userEntity.getUserPatients();
-        patients = patients == null ?
-                   new ArrayList<>()
-                                    : userEntity.getUserPatients();
+        patients = patients == null ? new ArrayList<>() : userEntity.getUserPatients();
 
-        UserResponseDto result
-            = userDtoEntityMapper.userEntityToUserResponseDto(userEntity);
+        UserResponseDto result = userDtoEntityMapper.userEntityToUserResponseDto(userEntity);
         result.setDoctorsIds(
-            doctors.stream()
-                .map(doc -> doc.getId().toString())
-                .collect(Collectors.toList())
+                doctors.stream()
+                        .map(doc -> doc.getId().toString())
+                        .collect(Collectors.toList())
         );
         result.setPatientsIds(
-            patients.stream()
-                .map(pat -> pat.getId().toString())
-                .collect(Collectors.toList())
+                patients.stream()
+                        .map(pat -> pat.getId().toString())
+                        .collect(Collectors.toList())
         );
 
         return result;
@@ -93,12 +89,8 @@ public class DtoUtilsImpl implements DtoUtils {
 
     @Override
     public UserRequestDto sanitizeUser(UserRequestDto dto) {
-        String firstName = dto.getFirstName() == null
-                           ? null
-                           : Encode.forHtml(dto.getFirstName());
-        String lastName = dto.getLastName() == null
-                          ? null
-                          : Encode.forHtml(dto.getLastName());
+        String firstName = forHtmlNullSafe(dto.getFirstName());
+        String lastName = forHtmlNullSafe(dto.getLastName());
         dto.setFirstName(firstName);
         dto.setLastName(lastName);
 
@@ -147,7 +139,7 @@ public class DtoUtilsImpl implements DtoUtils {
 
     @Override
     public DoctorRequestDto sanitizeDoctor(DoctorRequestDto dto) {
-        String speciality = dto.getSpeciality() == null ? null : Encode.forHtml(dto.getSpeciality());
+        String speciality = forHtmlNullSafe(dto.getSpeciality());
         dto.setSpeciality(speciality);
         return dto;
     }
@@ -179,10 +171,10 @@ public class DtoUtilsImpl implements DtoUtils {
     }
 
     @Override
-    public PatientRequestDto sanitizePatient(PatientRequestDto dto) {
-        String disease = dto.getDisease() == null ? null : Encode.forHtml(dto.getDisease());
-        dto.setDisease(disease);
-        return dto;
+    public PatientRequestDto sanitizePatient(PatientRequestDto patientRequestDto) {
+        String disease = forHtmlNullSafe(patientRequestDto.getDisease());
+        patientRequestDto.setDisease(disease);
+        return patientRequestDto;
     }
 
     @Override

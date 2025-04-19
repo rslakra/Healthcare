@@ -13,28 +13,24 @@ import java.util.UUID;
 public interface DoctorDtoEntityMapper {
 
     @Mappings({
-        @Mapping(
-            target = "id",
-            expression = "java( doctorRequestDto.getId() == null " +
-                         "? null " +
-                         ": UUID.fromString(doctorRequestDto.getId()) )"
-        ),
-        @Mapping(target = "speciality", source = "doctorRequestDto.speciality"),
-        @Mapping(
-            target = "userEntity.id",
-            expression = "java( doctorRequestDto.getUserId() == null" +
-                         " ? null " +
-                         ": UUID.fromString(doctorRequestDto.getUserId()) )"
-        )
+            @Mapping(
+                    target = "id",
+                    expression = "java(doctorRequestDto.getId() == null ? null : UUID.fromString(doctorRequestDto.getId()))"
+            ),
+            @Mapping(target = "speciality", source = "doctorRequestDto.speciality"),
+            @Mapping(
+                    target = "userEntity.id",
+                    expression = "java(doctorRequestDto.getUserId() == null ? null : UUID.fromString(doctorRequestDto.getUserId()))"
+            )
     })
     DoctorEntity doctorRequestDtoToDoctorEntity(DoctorRequestDto doctorRequestDto);
 
     @Mappings({
-        @Mapping(target = "id", expression = "java( doctorEntity.getId() == null ? null : doctorEntity.getId().toString() )"),
-        @Mapping(target = "speciality", source = "doctorEntity.speciality"),
-        @Mapping(target = "firstName", source = "doctorEntity.userEntity.firstName"),
-        @Mapping(target = "lastName", source = "doctorEntity.userEntity.lastName")
+            @Mapping(target = "id", expression = "java(entity.getId() == null ? null : entity.getId().toString())"),
+            @Mapping(target = "speciality", source = "entity.speciality"),
+            @Mapping(target = "firstName", source = "entity.userEntity.firstName"),
+            @Mapping(target = "lastName", source = "entity.userEntity.lastName")
     })
-    DoctorResponseDto doctorEntityToDoctorResponse(DoctorEntity doctorEntity);
+    DoctorResponseDto doctorEntityToDoctorResponse(DoctorEntity entity);
 
 }

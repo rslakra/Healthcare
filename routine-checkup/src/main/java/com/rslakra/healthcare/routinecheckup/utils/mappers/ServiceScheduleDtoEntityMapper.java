@@ -9,6 +9,16 @@ import java.util.UUID;
 @Mapper(componentModel = "spring", imports = UUID.class)
 public interface ServiceScheduleDtoEntityMapper {
 
+    /**
+     * @param entity
+     * @return
+     */
     ServiceDataDto serviceEntityToDto(ServiceScheduleEntity entity);
+
+    /**
+     * @param entity
+     * @return
+     */
+    ServiceScheduleEntity serviceDtoToEntity(ServiceDataDto entity);
 
 }

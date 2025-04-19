@@ -12,11 +12,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * @author Rohtash Lakra
@@ -24,41 +23,35 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Component
 @RequiredArgsConstructor
-public class CustomAuthenticationSuccessHandler
-    implements AuthenticationSuccessHandler {
+public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     private final TokenComponent tokenComponent;
-
     private final JwtConstants jwtConstants;
-
     private final WebConstants webConstants;
-
-    private final Integer MILLIS_IN_SECOND = 1000;
 
     @Override
     public void onAuthenticationSuccess(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        Authentication authentication
+            HttpServletRequest request,
+            HttpServletResponse response,
+            Authentication authentication
     ) throws IOException, ServletException {
         UserDetails principal = (UserDetails) authentication.getPrincipal();
 
-        long maxAge = jwtConstants.getExpirationTimeMs().intValue()
-                      / MILLIS_IN_SECOND;
+        long maxAge = jwtConstants.getExpirationTimeMs().intValue() / TokenComponent.MILLIS_IN_SECOND;
         String token = tokenComponent.generateToken(principal);
         ResponseCookie cookie = ResponseCookie
-            .from(jwtConstants.getParameterName(), token)
-            .sameSite(webConstants.getSameSite())
-            .maxAge(maxAge)
-            .secure(true)
-            .httpOnly(true)
-            .build();
+                .from(jwtConstants.getParameterName(), token)
+                .sameSite(webConstants.getSameSite())
+                .maxAge(maxAge)
+                .secure(true)
+                .httpOnly(true)
+                .build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
         String url = "https://" + webConstants.getDomainName()
-                     + ":" + webConstants.getAppPort()
-                     + "/" + webConstants.getBasePath();
+                + ":" + webConstants.getAppPort()
+                + "/" + webConstants.getBasePath();
         response.addHeader(HttpHeaders.LOCATION, url);
         response.setStatus(HttpStatus.PERMANENT_REDIRECT.value());
     }
