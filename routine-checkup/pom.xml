@@ -8,7 +8,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.7.18</version>
-        <!-- lookup parent from repository -->
+        <!-- lookup parent from a repository -->
         <relativePath/>
     </parent>
     <!-- services -->

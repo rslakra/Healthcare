@@ -16,7 +16,7 @@
     <logger name="com.rslakra" level="DEBUG"/>
     <logger name="org.springframework" level="WARN"/>
     <logger name="org.springframework.transaction" level="WARN"/>
-    <!-- in order to debug some marshalling issues, this needs to be TRACE -->
+    <!-- to debug some marshaling issues, this should be TRACE -->
     <logger name="org.springframework.web.servlet.mvc" level="WARN"/>
 
     <!-- hibernate -->
