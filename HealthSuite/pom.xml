@@ -58,8 +58,8 @@
         <commons-csv.version>1.9.0</commons-csv.version>
         <opencsv.version>5.7.0</opencsv.version>
         <!-- excel parser version -->
-        <poi.version>5.4.0</poi.version>
-        <poi-ooxml.version>5.4.0</poi-ooxml.version>
+        <poi.version>5.4.1</poi.version>
+        <poi-ooxml.version>5.4.1</poi-ooxml.version>
 
         <!-- junit-jupiter-params -->
         <junit-jupiter-params.version>5.10.2</junit-jupiter-params.version>
