@@ -2,7 +2,7 @@ package com.rslakra.healthcare.healthsuite.model;
 
 import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * @author rlakra
