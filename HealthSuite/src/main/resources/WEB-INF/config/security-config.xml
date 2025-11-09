@@ -13,19 +13,13 @@
 		http://www.springframework.org/schema/security/spring-security.xsd">
 
 
+	<!-- HTTP security configuration is now handled by Java-based SecurityConfig class -->
+	<!-- This XML config only provides authentication manager and related beans -->
+	<!--
 	<http auto-config="true">
-		<!-- Completely exclude H2 console from security - must come before /** -->
-		<intercept-url pattern="/h2/**" security="none" />
-		<intercept-url pattern="/h2-console/**" security="none" />
-		<!-- Require authentication for all other URLs -->
 		<intercept-url pattern="/**" access="ROLE_USER" />
-		<!-- Configure headers to allow frames for H2 console -->
-		<headers>
-			<frame-options policy="SAMEORIGIN" />
-		</headers>
-		<!-- Disable CSRF for development (H2 console requires this) -->
-		<csrf disabled="true" />
 	</http>
+	-->
 
 
 	<beans:bean id="dataSource"

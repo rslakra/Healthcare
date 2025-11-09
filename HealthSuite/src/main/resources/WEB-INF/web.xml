@@ -18,10 +18,14 @@
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 
+	<!-- Security configuration is now handled by Java-based SecurityConfig class -->
+	<!-- XML security config is no longer needed -->
+	<!--
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>/WEB-INF/config/security-config.xml</param-value>
 	</context-param>
+	-->
 
 	<servlet>
 		<servlet-name>dHealthTrackerServlet</servlet-name>
