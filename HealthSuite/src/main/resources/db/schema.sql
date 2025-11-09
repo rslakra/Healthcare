@@ -16,20 +16,33 @@ create table if not exists `authorities` (
 	foreign key (username) references users(username)
 );
 
-create unique index IDX_USERS_AUTHORITIES on authorities (username, authority);
+create unique index if not exists IDX_USERS_AUTHORITIES on authorities (username, authority);
 
 
+-- Insert users only if they don't exist
 insert into `users` (`username`, `password`, `enabled`)
-values 
-	('rlakra', 'password', true),
-	('rslakra', 'secret', true),	
-	('lakra', 'password', true)	
-;
+select * from (
+	select 'rlakra' as username, 'password' as password, true as enabled
+	union all
+	select 'rslakra', 'secret', true
+	union all
+	select 'lakra', 'password', true
+) as new_users
+where not exists (select 1 from `users` where `users`.username = new_users.username);
 
+-- Insert authorities only if they don't exist
 insert into `authorities` (`username`, `authority`)
-values 
-	('rlakra', 'ROLE_USER'),
-	('rslakra', 'ROLE_USER'),	
-	('rslakra', 'ROLE_ADMIN'),	
-	('lakra', 'ROLE_USER')	
-;
+select * from (
+	select 'rlakra' as username, 'ROLE_USER' as authority
+	union all
+	select 'rslakra', 'ROLE_USER'
+	union all
+	select 'rslakra', 'ROLE_ADMIN'
+	union all
+	select 'lakra', 'ROLE_USER'
+) as new_authorities
+where not exists (
+	select 1 from `authorities` 
+	where `authorities`.username = new_authorities.username 
+	and `authorities`.authority = new_authorities.authority
+);
