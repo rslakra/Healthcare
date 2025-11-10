@@ -1,78 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset="utf-8">
-    <title>About Us - HealthSuite</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap CSS -->
-    <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
-    <link th:href="@{/css/bootstrap-responsive.css}" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link th:href="@{/css/navbar-styles.css}" rel="stylesheet">
-    <link th:href="@{/css/styles.css}" rel="stylesheet">
-    <!-- Favicon -->
-    <link rel="shortcut icon" th:href="@{/favicon.ico}">
-    <!-- HTML5 shim for IE6-8 -->
-    <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-</head>
-
+<head th:replace="~{fragments :: head('About Us - HealthSuite')}"></head>
 <body>
-    <!-- Top Navigation Bar -->
-    <div class="navbar navbar-fixed-top navbar-inverse">
-        <div class="navbar-inner">
-            <div class="container">
-                <a class="brand navbar-brand" th:href="@{/}">HealthSuite</a>
-                <ul class="nav pull-right">
-                    <li th:if="${authenticated}">
-                        <a href="#">
-                            <span th:text="'Welcome, ' + ${username}"></span>
-                        </a>
-                    </li>
-                    <li th:if="${authenticated}">
-                        <a th:href="@{/logout}">Logout</a>
-                    </li>
-                    <li th:unless="${authenticated}">
-                        <a th:href="@{/login}">Login</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sidebar Menu -->
-    <div class="sidebar">
-        <ul class="nav">
-            <li class="nav-header">Public Pages</li>
-            <li><a th:href="@{/}">🏠 Home</a></li>
-            <li><a th:href="@{/about}" class="active">ℹ️ About</a></li>
-            <li><a th:href="@{/contact}">📧 Contact Us</a></li>
-            
-            <li class="nav-header" th:if="${authenticated}">Main Menu</li>
-            <li th:if="${authenticated}"><a th:href="@{/exercises}">📊 Exercise Log</a></li>
-            <li th:if="${authenticated}"><a th:href="@{/add-exercise}">➕ Add Exercise</a></li>
-            <li th:if="${authenticated}"><a th:href="@{/add-goal}">🎯 Set Goal</a></li>
-            <li th:if="${authenticated}"><a th:href="@{/add-minutes}">⏱️ Log Minutes</a></li>
-            
-            <li class="nav-header" th:if="${authenticated}">User Management</li>
-            <li th:if="${authenticated}"><a th:href="@{/add-users}">👤 Add User</a></li>
-            <li th:if="${authenticated}"><a th:href="@{/add-registration}">📝 Registration</a></li>
-            
-            <li class="nav-header" th:if="${authenticated}">System</li>
-            <li th:if="${authenticated}"><a th:href="@{/h2}" target="_blank">🗄️ Database Console</a></li>
-        </ul>
-        
-        <div class="user-info" th:if="${authenticated}">
-            <div><strong>User:</strong> <span th:text="${username}"></span></div>
-        </div>
-        <div class="user-info" th:unless="${authenticated}">
-            <div style="text-align: center; padding: 10px;">
-                <a th:href="@{/login}" style="color: #3498db; text-decoration: none;">🔐 Login</a>
-            </div>
-        </div>
-    </div>
+    <div th:replace="~{fragments :: navbar}"></div>
+    <div th:replace="~{fragments :: sidebar('about')}"></div>
 
     <!-- Main Content Area -->
     <div class="main-content">
@@ -147,20 +79,7 @@
     </div>
 
     <!-- Scripts -->
-    <script th:src="@{/jquery-1.8.3.js}"></script>
-    <script th:src="@{/js/bootstrap.js}"></script>
-    <script>
-        // Highlight active menu item
-        $(document).ready(function() {
-            var currentPath = window.location.pathname;
-            $('.sidebar .nav li a').each(function() {
-                var linkPath = $(this).attr('href');
-                if (linkPath && currentPath.includes(linkPath.replace('/HealthSuite', ''))) {
-                    $(this).addClass('active');
-                }
-            });
-        });
-    </script>
+    <div th:replace="~{fragments :: scripts}"></div>
 </body>
 </html>
 

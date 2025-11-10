@@ -1,0 +1,91 @@
+/* ============================================================================
+   HealthSuite Sidebar Styles
+   ============================================================================ */
+
+/* Sidebar Styles */
+.sidebar {
+    position: fixed;
+    top: 40px;
+    left: 0;
+    bottom: 0;
+    width: 250px;
+    background: white;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 0;
+    color: #2c3e50;
+}
+
+.sidebar .nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar .nav li {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.sidebar .nav li a {
+    display: block;
+    padding: 15px 20px;
+    color: #2c3e50;
+    text-decoration: none;
+    transition: all 0.3s;
+    border-radius: 4px;
+    margin: 5px 0;
+}
+
+.sidebar .nav li a:hover {
+    background-color: #f8f9fa;
+    color: #3498db;
+    padding-left: 25px;
+}
+
+.sidebar .nav li a.active {
+    background-color: #3498db;
+    color: white;
+}
+
+.sidebar .nav-header {
+    padding: 15px 20px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #7f8c8d;
+    letter-spacing: 1px;
+    margin-top: 20px;
+}
+
+.sidebar .nav-header:first-child {
+    margin-top: 0;
+}
+
+.user-info {
+    color: #2c3e50;
+    padding: 15px 20px;
+    border-top: 1px solid #e0e0e0;
+    margin-top: 20px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.user-info strong {
+    color: #3498db;
+}
+
+.user-info a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+        left: 0;
+        bottom: 0;
+    }
+}
+

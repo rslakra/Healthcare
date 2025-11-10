@@ -92,6 +92,48 @@ public class HomeController {
     }
 
     /**
+     * Handle contact form submission (public access).
+     * 
+     * @param name the sender's name
+     * @param email the sender's email
+     * @param subject the message subject
+     * @param message the message content
+     * @param model the model
+     * @return redirect to contact page with success message
+     */
+    @RequestMapping(value = "/contact", method = RequestMethod.POST)
+    public String submitContact(
+            @org.springframework.web.bind.annotation.RequestParam("name") String name,
+            @org.springframework.web.bind.annotation.RequestParam("email") String email,
+            @org.springframework.web.bind.annotation.RequestParam("subject") String subject,
+            @org.springframework.web.bind.annotation.RequestParam("message") String message,
+            Model model) {
+        LOGGER.debug("+submitContact(name={}, email={}, subject={}, message={})", 
+                     name, email, subject, message);
+        
+        // Log the contact form submission (in a real application, you would send an email or save to database)
+        LOGGER.info("Contact form submitted - Name: {}, Email: {}, Subject: {}, Message: {}", 
+                    name, email, subject, message);
+        
+        // Get current authenticated user info (if authenticated)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && 
+            !authentication.getName().equals("anonymousUser")) {
+            model.addAttribute("username", authentication.getName());
+            model.addAttribute("authenticated", true);
+        } else {
+            model.addAttribute("authenticated", false);
+        }
+        
+        // Add success message
+        model.addAttribute("success", true);
+        model.addAttribute("successMessage", "Thank you for contacting us! We'll get back to you soon.");
+        
+        LOGGER.debug("-submitContact(), returning contact page with success message");
+        return "contact";
+    }
+
+    /**
      * Display the login page (public access).
      * If user is already authenticated, redirect to home.
      * 

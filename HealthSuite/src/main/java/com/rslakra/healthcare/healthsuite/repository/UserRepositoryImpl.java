@@ -30,8 +30,12 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     private static final String UPDATE_SQL = 
-        "UPDATE users SET email = ?, first_name = ?, last_name = ? " +
+        "UPDATE users SET email = ?, first_name = ?, last_name = ?, enabled = ? " +
         "WHERE username = ?";
+
+    private static final String INSERT_SQL = 
+        "INSERT INTO users (username, email, first_name, last_name, password, enabled) " +
+        "VALUES (?, ?, ?, ?, ?, ?)";
 
     private static final String FIND_BY_USERNAME_SQL = 
         "SELECT id, username, email, first_name, last_name, password, enabled, created_at, updated_at " +
@@ -44,6 +48,10 @@ public class UserRepositoryImpl implements UserRepository {
     private static final String EXISTS_BY_USERNAME_SQL = 
         "SELECT COUNT(*) FROM users WHERE username = ?";
 
+    private static final String FIND_ALL_SQL = 
+        "SELECT id, username, email, first_name, last_name, password, enabled, created_at, updated_at " +
+        "FROM users ORDER BY username";
+
     @Override
     public boolean save(User user) {
         LOGGER.debug("Saving user: {}", user.getUsername());
@@ -52,18 +60,28 @@ public class UserRepositoryImpl implements UserRepository {
             int rowsAffected;
             
             if (exists) {
-                // Update existing user profile fields (username must already exist in users table)
+                // Update existing user profile fields
                 rowsAffected = jdbcTemplate.update(UPDATE_SQL,
                     user.getEmail(),
                     user.getFirstName(),
                     user.getLastName(),
+                    user.getEnabled() != null ? user.getEnabled() : true,
                     user.getUsername());
                 LOGGER.debug("User updated, rows affected: {}", rowsAffected);
             } else {
-                // User doesn't exist - cannot insert without password and enabled
-                // This should only update profile fields for existing users
-                LOGGER.warn("Cannot create user - user {} does not exist in users table", user.getUsername());
-                return false;
+                // Insert new user
+                if (user.getPassword() == null || user.getPassword().isEmpty()) {
+                    LOGGER.warn("Cannot create user - password is required for new users");
+                    return false;
+                }
+                rowsAffected = jdbcTemplate.update(INSERT_SQL,
+                    user.getUsername(),
+                    user.getEmail(),
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getPassword(),
+                    user.getEnabled() != null ? user.getEnabled() : true);
+                LOGGER.debug("User created, rows affected: {}", rowsAffected);
             }
             
             return rowsAffected > 0;
@@ -86,6 +104,18 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public User findById(Long id) {
+        LOGGER.debug("Finding user by ID: {}", id);
+        try {
+            return jdbcTemplate.queryForObject(FIND_BY_ID_SQL,
+                new UserRowMapper(), id);
+        } catch (Exception e) {
+            LOGGER.debug("User not found for ID: {}", id);
+            return null;
+        }
+    }
+
+    @Override
     public boolean existsByUsername(String username) {
         LOGGER.debug("Checking if username exists: {}", username);
         try {
@@ -95,6 +125,17 @@ public class UserRepositoryImpl implements UserRepository {
         } catch (Exception e) {
             LOGGER.error("Error checking username existence: {}", e.getMessage(), e);
             return false;
+        }
+    }
+
+    @Override
+    public java.util.List<User> findAll() {
+        LOGGER.debug("Finding all users");
+        try {
+            return jdbcTemplate.query(FIND_ALL_SQL, new UserRowMapper());
+        } catch (Exception e) {
+            LOGGER.error("Error finding all users: {}", e.getMessage(), e);
+            return new java.util.ArrayList<>();
         }
     }
 

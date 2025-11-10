@@ -37,10 +37,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(Long id) {
         LOGGER.debug("Finding user by ID: {}", id);
-        // Note: This method may need to be added to UserRepository if not present
-        // For now, we'll use findByUsername after getting username from id
-        // This is a placeholder - you may want to add findById to repository
-        return null;
+        return userRepository.findById(id);
     }
 
     @Override
@@ -59,6 +56,12 @@ public class UserServiceImpl implements UserService {
             return user != null ? user.getId() : null;
         }
         return null;
+    }
+
+    @Override
+    public java.util.List<User> findAllUsers() {
+        LOGGER.debug("Finding all users");
+        return userRepository.findAll();
     }
 }
 

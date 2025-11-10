@@ -32,5 +32,20 @@ public interface UserRepository {
      * @return true if exists, false otherwise
      */
     boolean existsByUsername(String username);
+
+    /**
+     * Find all users.
+     * 
+     * @return list of all users
+     */
+    java.util.List<User> findAll();
+
+    /**
+     * Find a user by ID.
+     * 
+     * @param id the user ID
+     * @return the user, or null if not found
+     */
+    User findById(Long id);
 }
 

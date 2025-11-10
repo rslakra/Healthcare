@@ -1,114 +1,91 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <meta charset="utf-8">
-    <title>Add Minutes - HealthSuite</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap CSS -->
-    <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
-    <link th:href="@{/css/bootstrap-responsive.css}" rel="stylesheet">
-    <!-- Custom CSS -->
-    <link th:href="@{/css/navbar-styles.css}" rel="stylesheet">
-    <link th:href="@{/css/styles.css}" rel="stylesheet">
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js">
-      </script>
-    <![endif]-->
-    <!-- Le fav and touch icons -->
-    <link rel="shortcut icon" th:href="@{/favicon.ico}">
-
-    <script type="text/javascript" th:src="@{/jquery-1.8.3.js}"></script>
-
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $.ajax({
-                url: /*[[@{/activities.json}]]*/ '/activities.json',
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    var html = '<option value="">--Please select one--</option>';
-                    if (data && data.length > 0) {
-                        for (var i = 0; i < data.length; i++) {
-                            html += '<option value="' + data[i].desc + '">'
-                                + data[i].desc
-                                + '</option>';
-                        }
-                    }
-                    $('#activities').html(html);
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error loading activities: ', status, error);
-                    $('#activities').html('<option value="">Error loading activities</option>');
-                }
-            });
-        });
-    </script>
-</head>
+<head th:replace="~{fragments :: head('Log Minutes - HealthSuite')}"></head>
 <body>
-<div class="navbar navbar-fixed-top navbar-inverse">
-    <div class="navbar-inner">
-        <div class="container">
-            <a class="brand navbar-brand" th:href="@{/}">HealthSuite</a>
-            <ul class="nav pull-right">
-                <li th:if="${authenticated}">
-                    <a href="#">
-                        <span th:text="'Welcome, ' + ${username}"></span>
-                    </a>
-                </li>
-                <li th:if="${authenticated}">
-                    <a th:href="@{/logout}">Logout</a>
-                </li>
-                <li th:unless="${authenticated}">
-                    <a th:href="@{/login}">Login</a>
-                </li>
-            </ul>
+    <div th:replace="~{fragments :: navbar}"></div>
+    <div th:replace="~{fragments :: sidebar('add-minutes')}"></div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="content-card">
+            <h1>⏱️ Log Minutes</h1>
+            <p>Record your exercise minutes and activity.</p>
+            
+            <div style="margin-bottom: 20px;">
+                <a class="btn" th:href="@{/add-minutes(language='en')}">English</a>
+                <a class="btn" th:href="@{/add-minutes(language='es')}">Spanish</a>
+            </div>
+            
+            <form th:action="@{/add-minutes}" th:object="${exercise}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                
+                <div th:if="${#fields.hasErrors('*')}" class="errorblock" style="padding: 15px; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 5px; color: #721c24; margin-bottom: 20px;">
+                    <ul style="margin: 0; padding-left: 20px;">
+                        <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+                
+                <div class="form-group">
+                    <label for="minutes">
+                        <span th:text="#{minutes.text}">Enter Minutes:</span> *
+                    </label>
+                    <input type="number" id="minutes" th:field="*{minutes}" 
+                           min="1"
+                           th:class="${#fields.hasErrors('minutes')} ? 'error' : ''" required/>
+                    <span th:if="${#fields.hasErrors('minutes')}" class="error" th:errors="*{minutes}"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="activity">
+                        <span th:text="#{minutes.activity}">Activity:</span> *
+                    </label>
+                    <select id="activities" th:field="*{activity}" 
+                            th:class="${#fields.hasErrors('activity')} ? 'error' : ''" required>
+                        <option value="">--Please select one--</option>
+                    </select>
+                    <span th:if="${#fields.hasErrors('activity')}" class="error" th:errors="*{activity}"></span>
+                </div>
+
+                <button type="submit" class="btn-submit" th:text="#{minutes.button.enter}">Enter</button>
+                <a th:href="@{/}" class="btn-cancel" style="margin-left: 10px;">Cancel</a>
+            </form>
+
+            <div th:if="${goal != null}" style="margin-top: 20px; padding: 15px; background-color: #e8f4f8; border-radius: 8px;">
+                <strong><span th:text="#{minutes.goal}">Goal:</span></strong>
+                <span th:text="${goal.minutes}"></span> minutes
+            </div>
         </div>
     </div>
-</div>
-<div class="container">
-    <div>
-        <h1>
-            <span th:text="#{minutes.exercised}">Exercise Minutes</span>
-        </h1>
-    </div>
-    <a class="btn" th:href="@{/add-minutes(language='en')}"> English </a>
-    <a class="btn" th:href="@{/add-minutes(language='es')}"> Spanish </a>
-    <br/><br/>
-    <form th:action="@{/add-minutes}" th:object="${exercise}" method="post">
-        <div th:if="${#fields.hasErrors('*')}" class="errorblock">
-            <ul>
-                <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
-            </ul>
-        </div>
-        <div class="control-group">
-            <label for="textinput1">
-                <span th:text="#{minutes.text}">Enter Minutes:</span>
-            </label>
-            <input type="number" id="textinput1" th:field="*{minutes}"/>
-            <span th:if="${#fields.hasErrors('minutes')}" class="error" th:errors="*{minutes}"></span>
-        </div>
 
-        <div class="control-group">
-            <label for="selectinput1">
-                <span th:text="#{minutes.activity}">Activity:</span>
-            </label>
-            <select id="activities" th:field="*{activity}">
-                <option value="">--Please select one--</option>
-            </select>
-        </div>
-
-        <input type="submit" class="btn" th:value="#{minutes.button.enter}"/>
-    </form>
-
-    <span class="label" th:if="${goal != null}">
-        <span th:text="#{minutes.goal}">Goal:</span>
-        <span th:text="${goal.minutes}"></span>
-    </span>
-</div>
-
-<script th:src="@{/js/bootstrap.js}"></script>
+    <div th:replace="~{fragments :: scripts}"></div>
+    <script type="text/javascript">
+        // Load activities from API
+        if (typeof jQuery !== 'undefined') {
+            jQuery(document).ready(function($) {
+                $.ajax({
+                    url: /*[[@{/activities.json}]]*/ '/activities.json',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        var html = '<option value="">--Please select one--</option>';
+                        if (data && data.length > 0) {
+                            for (var i = 0; i < data.length; i++) {
+                                html += '<option value="' + data[i].desc + '">'
+                                    + data[i].desc
+                                    + '</option>';
+                            }
+                        }
+                        $('#activities').html(html);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error loading activities: ', status, error);
+                        $('#activities').html('<option value="">Error loading activities</option>');
+                    }
+                });
+            });
+        }
+    </script>
 </body>
 </html>
 

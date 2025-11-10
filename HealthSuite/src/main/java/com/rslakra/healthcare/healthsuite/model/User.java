@@ -31,14 +31,12 @@ public class User {
     @Size(max = 64, message = "Last name must not exceed 64 characters")
     private String lastName;
 
-    @NotBlank(message = "Password is required")
     @Size(max = 128, message = "Password must not exceed 128 characters")
     private String password;
 
     private Boolean enabled = true;
 
     private LocalDateTime createdAt;
-
     private LocalDateTime updatedAt;
 
     public Long getId() {

@@ -82,7 +82,17 @@ public class ExerciseRepositoryImpl implements ExerciseRepository {
                 return ps;
             }, keyHolder);
 
-            Long generatedId = keyHolder.getKey() != null ? keyHolder.getKey().longValue() : null;
+            Long generatedId = null;
+            if (keyHolder.getKeys() != null && !keyHolder.getKeys().isEmpty()) {
+                Object id = keyHolder.getKeys().get("ID");
+                if (id == null) {
+                    // Try lowercase as fallback
+                    id = keyHolder.getKeys().get("id");
+                }
+                if (id != null) {
+                    generatedId = ((Number) id).longValue();
+                }
+            }
             exercise.setId(generatedId);
             LOGGER.debug("Exercise saved with ID: {}", generatedId);
             return exercise;
