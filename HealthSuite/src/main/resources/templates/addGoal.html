@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>Add Goal - HealthSuite</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/css/bootstrap-responsive.css}" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link th:href="@{/css/navbar-styles.css}" rel="stylesheet">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js">
+    </script>
+    <![endif]-->
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" th:href="@{/favicon.ico}">
+</head>
+<body>
+<div class="navbar navbar-fixed-top navbar-inverse">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="brand navbar-brand" th:href="@{/}">HealthSuite</a>
+            <ul class="nav pull-right">
+                <li th:if="${authenticated}">
+                    <a href="#">
+                        <span th:text="'Welcome, ' + ${username}"></span>
+                    </a>
+                </li>
+                <li th:if="${authenticated}">
+                    <a th:href="@{/logout}">Logout</a>
+                </li>
+                <li th:unless="${authenticated}">
+                    <a th:href="@{/login}">Login</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div>
+        <h1>Add Goal</h1>
+        <p>
+            Add your workout goal in minutes for the day. <br> &nbsp;
+        </p>
+    </div>
+
+    <form th:action="@{/add-goal}" th:object="${goal}" method="post">
+        <div th:if="${#fields.hasErrors('*')}" class="errorblock">
+            <ul>
+                <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+            </ul>
+        </div>
+        <label for="textinput1"> Enter Minutes: </label>
+        <input type="number" id="textinput1" th:field="*{minutes}" 
+               th:class="${#fields.hasErrors('minutes')} ? 'error' : ''"/>
+        <span th:if="${#fields.hasErrors('minutes')}" class="error" th:errors="*{minutes}"></span>
+        <br/>
+        <input type="submit" class="btn" value="Enter Goal Minutes"/>
+    </form>
+
+    <div class="control-group"></div>
+</div>
+
+<script th:src="@{/jquery-1.8.3.js}"></script>
+<script th:src="@{/js/bootstrap.js}"></script>
+</body>
+</html>
+

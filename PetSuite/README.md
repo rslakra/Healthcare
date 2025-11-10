@@ -9,11 +9,13 @@ This repository contains all the ```healthcare``` projects.
 ---
 
 ```
-    /
-    ├── HealthSuite                     # The Library Service
-    ├── pet-services                    # The pets services
-    ├── routine-checkup                 # The routine checkup
-    └── README.md
+/
+├── HealthSuite                     # The Library Service
+├── pet-services                    # The pets services
+├── routine-checkup                 # The routine checkup
+├── README.md
+├── <module>                        # The module service
+└── /
 ```
 
 
