@@ -47,5 +47,12 @@ public interface UserService {
      * @return the user ID, or null if not authenticated
      */
     Long getCurrentUserId();
+
+    /**
+     * Find all users.
+     * 
+     * @return list of all users
+     */
+    java.util.List<User> findAllUsers();
 }
 

@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.jdbc.JdbcDaoImpl;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.sql.DataSource;
 
@@ -89,18 +90,34 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
                                                    DaoAuthenticationProvider authenticationProvider) throws Exception {
-        // Use "/" - Spring Security automatically handles context path
+        // Use AntPathRequestMatcher explicitly because there are multiple servlets (H2 console and DispatcherServlet)
         http
             .authenticationProvider(authenticationProvider)
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/", "/about", "/contact", "/contact-us",
-                                 "/h2/**", "/h2-console/**", "/login", "/login/**",
-                                 "/jquery-1.8.3.js", "/favicon.ico", "/assets/**", "/pdfs/**",
-                                 "/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers(
+                    new AntPathRequestMatcher("/"),
+                    new AntPathRequestMatcher("/about"),
+                    new AntPathRequestMatcher("/contact"),
+                    new AntPathRequestMatcher("/contact-us"),
+                    new AntPathRequestMatcher("/h2/**"),
+                    new AntPathRequestMatcher("/h2-console/**"),
+                    new AntPathRequestMatcher("/login"),
+                    new AntPathRequestMatcher("/login/**"),
+                    new AntPathRequestMatcher("/jquery-1.8.3.js"),
+                    new AntPathRequestMatcher("/favicon.ico"),
+                    new AntPathRequestMatcher("/assets/**"),
+                    new AntPathRequestMatcher("/pdfs/**"),
+                    new AntPathRequestMatcher("/css/**"),
+                    new AntPathRequestMatcher("/js/**"),
+                    new AntPathRequestMatcher("/images/**")
+                ).permitAll()
                 .anyRequest().authenticated()
             )
             .csrf(csrf -> csrf
-                .ignoringRequestMatchers("/h2/**", "/h2-console/**")
+                .ignoringRequestMatchers(
+                    new AntPathRequestMatcher("/h2/**"),
+                    new AntPathRequestMatcher("/h2-console/**")
+                )
             )
             .headers(headers -> headers
                 .frameOptions(frameOptions -> frameOptions.sameOrigin())

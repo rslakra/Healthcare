@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <!-- Navbar Fragment -->
+    <div th:fragment="navbar">
+        <div class="navbar navbar-fixed-top navbar-inverse">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="brand navbar-brand" th:href="@{/}">HealthSuite</a>
+                    <ul class="nav pull-right">
+                        <li th:if="${authenticated}">
+                            <a href="#">
+                                <span th:text="'Welcome, ' + ${username}"></span>
+                            </a>
+                        </li>
+                        <li th:if="${authenticated}">
+                            <a th:href="@{/logout}">Logout</a>
+                        </li>
+                        <li th:unless="${authenticated}">
+                            <a th:href="@{/login}">Login</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Fragment -->
+    <div th:fragment="sidebar(activeItem)">
+        <div class="sidebar">
+            <ul class="nav">
+                <li class="nav-header">Main Menu</li>
+                <li>
+                    <a th:href="@{/}" 
+                       th:class="${activeItem == 'home' ? 'active' : ''}">🏠 Home</a>
+                </li>
+                <li>
+                    <a th:href="@{/about}" 
+                       th:class="${activeItem == 'about' ? 'active' : ''}">ℹ️ About</a>
+                </li>
+                <li>
+                    <a th:href="@{/contact}" 
+                       th:class="${activeItem == 'contact' ? 'active' : ''}">📧 Contact Us</a>
+                </li>
+                
+                <li class="nav-header" th:if="${authenticated}">Activity Management</li>
+                <li th:if="${authenticated}">
+                    <a th:href="@{/exercises}" 
+                       th:class="${activeItem == 'exercises' ? 'active' : ''}">📊 Activities</a>
+                </li>
+<!--                <li th:if="${authenticated}">-->
+<!--                    <a th:href="@{/add-exercise}" -->
+<!--                       th:class="${activeItem == 'add-exercise' ? 'active' : ''}">➕ Add Exercise</a>-->
+<!--                </li>-->
+                <li th:if="${authenticated}">
+                    <a th:href="@{/add-goal}" 
+                       th:class="${activeItem == 'add-goal' ? 'active' : ''}">🎯 Set Goal</a>
+                </li>
+                <li th:if="${authenticated}">
+                    <a th:href="@{/add-minutes}" 
+                       th:class="${activeItem == 'add-minutes' ? 'active' : ''}">⏱️ Log Minutes</a>
+                </li>
+                
+                <li class="nav-header" th:if="${authenticated}">User Management</li>
+                <li th:if="${authenticated}">
+                    <a th:href="@{/users}" 
+                       th:class="${activeItem == 'users' ? 'active' : ''}">👥 Users</a>
+                </li>
+                <!-- <li th:if="${authenticated}">
+                    <a th:href="@{/add-users}" 
+                       th:class="${activeItem == 'add-users' ? 'active' : ''}">👤 Add User</a>
+                </li> -->
+                
+                <li class="nav-header" th:if="${authenticated}">System</li>
+                <li th:if="${authenticated}">
+                    <a th:href="@{/h2}" target="_blank">🗄️ Database Console</a>
+                </li>
+            </ul>
+            
+            <div class="user-info" th:if="${authenticated}">
+                <div><strong>User:</strong> <span th:text="${username}"></span></div>
+            </div>
+            <div class="user-info" th:unless="${authenticated}">
+                <div style="text-align: center; padding: 10px;">
+                    <a th:href="@{/login}" style="color: #3498db; text-decoration: none;">🔐 Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Common Head Fragment -->
+    <head th:fragment="head(title)">
+        <meta charset="utf-8">
+        <title th:text="${title}">HealthSuite</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- Bootstrap CSS -->
+        <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+        <link th:href="@{/css/bootstrap-responsive.css}" rel="stylesheet">
+        <!-- Custom CSS -->
+        <link th:href="@{/css/navbar-styles.css}" rel="stylesheet">
+        <link th:href="@{/css/sidebar-styles.css}" rel="stylesheet">
+        <link th:href="@{/css/form-styles.css}" rel="stylesheet">
+        <link th:href="@{/css/styles.css}" rel="stylesheet">
+        <!-- Favicon -->
+        <link rel="shortcut icon" th:href="@{/favicon.ico}">
+        <!-- HTML5 shim for IE6-8 -->
+        <!--[if lt IE 9]>
+        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+    </head>
+
+    <!-- Common Scripts Fragment -->
+    <div th:fragment="scripts">
+        <!-- Scripts - jQuery must load before Bootstrap -->
+        <script type="text/javascript" th:src="@{/jquery-1.8.3.js}"></script>
+        <script type="text/javascript" th:src="@{/js/bootstrap.js}"></script>
+    </div>
+</body>
+</html>
+

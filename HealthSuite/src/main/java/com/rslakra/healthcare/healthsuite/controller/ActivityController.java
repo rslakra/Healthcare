@@ -26,15 +26,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Controller for handling exercise operations, goals, and minutes tracking.
+ * Controller for handling activity operations, goals, and minutes tracking.
  * 
  * @author rslakra
  */
 @Controller
 @SessionAttributes("goal")
-public class ExerciseController {
+public class ActivityController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ExerciseController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ActivityController.class);
 
     @Autowired
     private ExerciseService exerciseService;
@@ -194,6 +194,7 @@ public class ExerciseController {
             exercise.setUserId(userId);
         }
         model.addAttribute("exercise", exercise);
+        model.addAttribute("activityTypes", com.rslakra.healthcare.healthsuite.model.ActivityType.values());
         LOGGER.debug("-addExercise(), model={}", model);
         return "addExercise";
     }
@@ -240,7 +241,7 @@ public class ExerciseController {
         List<Exercise> exercises = exerciseService.findAllExercises();
         model.addAttribute("exercises", exercises);
         LOGGER.debug("-listExercises(), found {} exercises", exercises.size());
-        return "exercises";
+        return "listActivities";
     }
 
     /**
@@ -253,6 +254,7 @@ public class ExerciseController {
     @RequestMapping(value = "/exercises/{id}/edit", method = RequestMethod.GET)
     public String editExercise(@PathVariable Long id, Model model) {
         LOGGER.debug("+editExercise({}, {})", id, model);
+        model.addAttribute("activityTypes", com.rslakra.healthcare.healthsuite.model.ActivityType.values());
         Exercise exercise = exerciseService.findExerciseById(id);
         if (exercise == null) {
             LOGGER.warn("Exercise not found with ID: {}", id);

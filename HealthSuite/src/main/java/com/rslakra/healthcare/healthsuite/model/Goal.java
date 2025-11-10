@@ -31,7 +31,6 @@ public class Goal {
     private Integer minutes;
 
     private LocalDateTime createdAt;
-
     private LocalDateTime updatedAt;
 
     public Goal() {

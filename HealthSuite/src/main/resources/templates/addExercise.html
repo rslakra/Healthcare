@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments :: head('Add Exercise - HealthSuite')}"></head>
+<body>
+    <div th:replace="~{fragments :: navbar}"></div>
+    <div th:replace="~{fragments :: sidebar('add-exercise')}"></div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="content-card">
+            <h1>➕ Add Exercise</h1>
+            <p>Record your exercise activity with details.</p>
+            
+            <!-- Error Message -->
+            <div th:if="${error}" class="error-message" style="padding: 15px; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 5px; color: #721c24; margin-bottom: 20px;">
+                <strong>Error!</strong> <span th:text="${error}"></span>
+            </div>
+            
+            <form th:action="@{/add-exercise}" th:object="${exercise}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <input type="hidden" th:field="*{userId}"/>
+                
+                <div th:if="${#fields.hasErrors('*')}" class="errorblock" style="padding: 15px; background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 5px; color: #721c24; margin-bottom: 20px;">
+                    <ul style="margin: 0; padding-left: 20px;">
+                        <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+                
+                <div class="form-group">
+                    <label for="exerciseDate">Exercise Date *</label>
+                    <input type="date" id="exerciseDate" th:field="*{exerciseDate}" 
+                           th:class="${#fields.hasErrors('exerciseDate')} ? 'error' : ''" required/>
+                    <span th:if="${#fields.hasErrors('exerciseDate')}" class="error" th:errors="*{exerciseDate}"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="activity">Activity Type *</label>
+                    <select id="activity" th:field="*{activity}" 
+                            th:class="${#fields.hasErrors('activity')} ? 'error' : ''" required>
+                        <option value="">--Please select one--</option>
+                        <option th:each="activityType : ${activityTypes}" 
+                                th:value="${activityType.description}" 
+                                th:text="${activityType.description}"
+                                th:selected="${exercise.activity != null && exercise.activity == activityType.description}">
+                        </option>
+                    </select>
+                    <span th:if="${#fields.hasErrors('activity')}" class="error" th:errors="*{activity}"></span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="minutes">Minutes *</label>
+                    <input type="number" id="minutes" th:field="*{minutes}" 
+                           min="1" max="120" 
+                           th:class="${#fields.hasErrors('minutes')} ? 'error' : ''" required/>
+                    <span th:if="${#fields.hasErrors('minutes')}" class="error" th:errors="*{minutes}"></span>
+                    <small style="display: block; color: #666; margin-top: 5px;">Enter minutes between 1 and 120</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" th:field="*{description}" 
+                              rows="4" maxlength="500"
+                              th:class="${#fields.hasErrors('description')} ? 'error' : ''"
+                              placeholder="Optional: Add notes about your exercise session"></textarea>
+                    <span th:if="${#fields.hasErrors('description')}" class="error" th:errors="*{description}"></span>
+                    <small style="display: block; color: #666; margin-top: 5px;">Maximum 500 characters</small>
+                </div>
+                
+                <button type="submit" class="btn-submit">Save Exercise</button>
+                <a th:href="@{/exercises}" class="btn-cancel" style="margin-left: 10px;">Cancel</a>
+            </form>
+        </div>
+    </div>
+
+    <div th:replace="~{fragments :: scripts}"></div>
+</body>
+</html>
+
