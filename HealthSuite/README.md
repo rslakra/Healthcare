@@ -6,8 +6,8 @@ A Spring Boot healthcare application used for tracking exercise goals and minute
 ## Technology Stack
 
 - **Java**: 21
-- **Spring Boot**: 3.3.0
-- **Spring Security**: 6.1.5
+- **Spring Boot**: 3.5.7
+- **Spring Security**: 6.x (managed by Spring Boot)
 - **Database**: H2 (default) / MySQL
 - **Build Tool**: Maven
 - **Packaging**: WAR

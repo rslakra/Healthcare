@@ -1,56 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+<web-app version="4.0" xmlns="https://jakarta.ee/xml/ns/jakartaee"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee 
+		https://jakarta.ee/xml/ns/jakartaee/web-app_4_0.xsd">
 
+	<display-name>HealthSuite Web Application</display-name>
 
-	<filter>
-		<filter-name>springSecurityFilterChain</filter-name>
-		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-	</filter>
+	<!-- 
+		Minimal web.xml for WAR deployment.
+		Spring Boot 3.5.x uses Java-based configuration via @Configuration classes.
+		- Security: SecurityConfig.java
+		- MVC: WebMvcConfig.java
+		- Static resources: Automatically handled by Spring Boot from src/main/resources/static/
+		- Templates: Thymeleaf templates in src/main/resources/templates/ (auto-configured)
+	-->
 
-	<filter-mapping>
-		<filter-name>springSecurityFilterChain</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
+	<!-- 
+		Spring Security filter is automatically registered by Spring Boot
+		when SecurityConfig is present. No need to declare it here.
+	-->
 
-	<listener>
-		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-	</listener>
+	<!-- 
+		DispatcherServlet is automatically configured by Spring Boot.
+		No need for explicit servlet declaration.
+	-->
 
-	<context-param>
-		<param-name>contextConfigLocation</param-name>
-		<param-value>/WEB-INF/config/security-config.xml</param-value>
-	</context-param>
-
-	<servlet>
-		<servlet-name>dHealthTrackerServlet</servlet-name>
-		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-		<init-param>
-			<param-name>contextConfigLocation</param-name>
-			<param-value>/WEB-INF/config/servlet-config.xml</param-value>
-		</init-param>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>dHealthTrackerServlet</servlet-name>
-		<url-pattern>*.html</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>dHealthTrackerServlet</servlet-name>
-		<url-pattern>/pdfs/**</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>dHealthTrackerServlet</servlet-name>
-		<url-pattern>/images/**</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>dHealthTrackerServlet</servlet-name>
-		<url-pattern>*.json</url-pattern>
-	</servlet-mapping>
-
-	<display-name>Archetype Created Web Application</display-name>
 </web-app>
