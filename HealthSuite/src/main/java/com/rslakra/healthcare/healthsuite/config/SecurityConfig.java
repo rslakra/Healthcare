@@ -1,7 +1,6 @@
 package com.rslakra.healthcare.healthsuite.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -27,9 +26,6 @@ import javax.sql.DataSource;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-    @Value("${server.servlet.contextPath:}")
-    private String contextPath;
 
     @Autowired
     private DataSource dataSource;
@@ -75,12 +71,12 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
                                                    DaoAuthenticationProvider authenticationProvider) throws Exception {
-        String defaultSuccessUrl = contextPath.isEmpty() ? "/" : contextPath + "/";
-        
+        // Use "/" - Spring Security automatically handles context path
         http
             .authenticationProvider(authenticationProvider)
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/h2/**", "/h2-console/**").permitAll()
+                .requestMatchers("/h2/**", "/h2-console/**", "/login", "/login/**",
+                                 "/jquery-1.8.3.js", "/favicon.ico", "/assets/**", "/pdfs/**").permitAll()
                 .anyRequest().hasRole("USER")
             )
             .csrf(csrf -> csrf
@@ -90,7 +86,7 @@ public class SecurityConfig {
                 .frameOptions(frameOptions -> frameOptions.sameOrigin())
             )
             .formLogin(formLogin -> formLogin
-                .defaultSuccessUrl(defaultSuccessUrl, true)
+                .defaultSuccessUrl("/", true)
                 .permitAll()
             );
         return http.build();

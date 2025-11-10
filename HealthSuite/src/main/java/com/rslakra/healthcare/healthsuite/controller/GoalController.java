@@ -26,7 +26,7 @@ public class GoalController {
      * @param model
      * @return
      */
-    @RequestMapping(value = "addGoal", method = RequestMethod.GET)
+    @RequestMapping(value = "/addGoal", method = RequestMethod.GET)
     public String addGoal(Model model) {
         LOGGER.debug("+addGoal({})", model);
         Goal goal = new Goal();
@@ -42,7 +42,7 @@ public class GoalController {
      * @param result
      * @return
      */
-    @RequestMapping(value = "addGoal", method = RequestMethod.POST)
+    @RequestMapping(value = "/addGoal", method = RequestMethod.POST)
     public String updateGoal(@Valid @ModelAttribute("goal") Goal goal, BindingResult result) {
         LOGGER.debug("+updateGoal({}, {})", goal, result);
 
@@ -53,7 +53,7 @@ public class GoalController {
         }
 
         LOGGER.debug("-updateGoal(), redirect to index page.");
-        return "redirect:index.jsp";
+        return "redirect:/";
     }
 
 }

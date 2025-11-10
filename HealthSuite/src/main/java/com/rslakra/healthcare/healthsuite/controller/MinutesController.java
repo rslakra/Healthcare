@@ -2,14 +2,17 @@ package com.rslakra.healthcare.healthsuite.controller;
 
 import com.rslakra.healthcare.healthsuite.model.Activity;
 import com.rslakra.healthcare.healthsuite.model.Exercise;
+import com.rslakra.healthcare.healthsuite.model.Goal;
 import com.rslakra.healthcare.healthsuite.service.ExerciseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import java.util.List;
 
@@ -26,24 +29,39 @@ public class MinutesController {
 
     /**
      * @param exercise
+     * @param model
+     * @param goal
      * @return
      */
     @RequestMapping(value = "/addMinutes", method = RequestMethod.GET)
-    public String getMinutes(@ModelAttribute("exercise") Exercise exercise) {
-
+    public String getMinutes(@ModelAttribute("exercise") Exercise exercise,
+                             Model model,
+                             @SessionAttribute(value = "goal", required = false) Goal goal) {
+        if (goal != null) {
+            model.addAttribute("goal", goal);
+        }
         return "addMinutes";
     }
 
     /**
      * @param exercise
      * @param result
+     * @param model
+     * @param goal
      * @return
      */
     @RequestMapping(value = "/addMinutes", method = RequestMethod.POST)
-    public String addMinutes(@Valid @ModelAttribute("exercise") Exercise exercise, BindingResult result) {
+    public String addMinutes(@Valid @ModelAttribute("exercise") Exercise exercise,
+                             BindingResult result,
+                             Model model,
+                             @SessionAttribute(value = "goal", required = false) Goal goal) {
 
         System.out.println("exercise: " + exercise.getMinutes());
         System.out.println("exercise activity: " + exercise.getActivity());
+
+        if (goal != null) {
+            model.addAttribute("goal", goal);
+        }
 
         if (result.hasErrors()) {
             return "addMinutes";
