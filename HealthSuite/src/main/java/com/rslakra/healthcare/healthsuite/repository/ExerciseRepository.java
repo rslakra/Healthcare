@@ -1,32 +1,24 @@
-package com.rslakra.healthcare.healthsuite.service;
+package com.rslakra.healthcare.healthsuite.repository;
 
-import com.rslakra.healthcare.healthsuite.model.Activity;
 import com.rslakra.healthcare.healthsuite.model.Exercise;
 
 import java.time.LocalDate;
 import java.util.List;
 
 /**
- * Service interface for exercise operations.
+ * Repository interface for exercise operations.
  * 
  * @author rslakra
  */
-public interface ExerciseService {
-
-    /**
-     * Get all activity types.
-     * 
-     * @return list of activities
-     */
-    List<Activity> findAllActivities();
+public interface ExerciseRepository {
 
     /**
      * Save an exercise.
      * 
      * @param exercise the exercise to save
-     * @return the saved exercise
+     * @return the saved exercise with generated ID
      */
-    Exercise saveExercise(Exercise exercise);
+    Exercise save(Exercise exercise);
 
     /**
      * Find an exercise by ID.
@@ -34,7 +26,7 @@ public interface ExerciseService {
      * @param id the exercise ID
      * @return the exercise, or null if not found
      */
-    Exercise findExerciseById(Long id);
+    Exercise findById(Long id);
 
     /**
      * Find all exercises by user ID.
@@ -42,38 +34,39 @@ public interface ExerciseService {
      * @param userId the user ID
      * @return list of exercises
      */
-    List<Exercise> findExercisesByUserId(Long userId);
+    List<Exercise> findByUserId(Long userId);
 
     /**
      * Find exercises by user ID and date range.
      * 
      * @param userId the user ID
-     * @param startDate the start date
-     * @param endDate the end date
+     * @param startDate the start date (inclusive)
+     * @param endDate the end date (inclusive)
      * @return list of exercises
      */
-    List<Exercise> findExercisesByUserIdAndDateRange(Long userId, LocalDate startDate, LocalDate endDate);
+    List<Exercise> findByUserIdAndDateRange(Long userId, LocalDate startDate, LocalDate endDate);
 
     /**
      * Find all exercises.
      * 
      * @return list of all exercises
      */
-    List<Exercise> findAllExercises();
+    List<Exercise> findAll();
 
     /**
-     * Update an exercise.
+     * Update an existing exercise.
      * 
      * @param exercise the exercise to update
-     * @return true if successful
+     * @return true if successful, false otherwise
      */
-    boolean updateExercise(Exercise exercise);
+    boolean update(Exercise exercise);
 
     /**
      * Delete an exercise by ID.
      * 
      * @param id the exercise ID
-     * @return true if successful
+     * @return true if successful, false otherwise
      */
-    boolean deleteExercise(Long id);
+    boolean deleteById(Long id);
 }
+

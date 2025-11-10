@@ -5,62 +5,44 @@
     <meta charset="utf-8">
     <title>Add Minutes - HealthSuite</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Le styles -->
-    <link th:href="@{/assets/css/bootstrap.css}" rel="stylesheet">
-    <style>
-        body {
-            padding-top: 60px; /* 60px to make the container go all the way
-      to the bottom of the topbar */
-        }
-        .error {
-            color: #ff0000;
-        }
-        .errorblock {
-            color: #000;
-            background-color: #ffEEEE;
-            border: 3px solid #ff0000;
-            padding: 8px;
-            margin: 16px;
-        }
-    </style>
-    <link th:href="@{/assets/css/bootstrap-responsive.css}" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/css/bootstrap-responsive.css}" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link th:href="@{/css/navbar-styles.css}" rel="stylesheet">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js">
       </script>
     <![endif]-->
     <!-- Le fav and touch icons -->
-    <link rel="shortcut icon" th:href="@{/assets/ico/favicon.ico}">
-    <link rel="apple-touch-icon-precomposed" sizes="144x144"
-          th:href="@{/assets/ico/apple-touch-icon-144-precomposed.png}">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114"
-          th:href="@{/assets/ico/apple-touch-icon-114-precomposed.png}">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72"
-          th:href="@{/assets/ico/apple-touch-icon-72-precomposed.png}">
-    <link rel="apple-touch-icon-precomposed"
-          th:href="@{/assets/ico/apple-touch-icon-57-precomposed.png}">
+    <link rel="shortcut icon" th:href="@{/favicon.ico}">
 
     <script type="text/javascript" th:src="@{/jquery-1.8.3.js}"></script>
 
     <script type="text/javascript">
         $(document).ready(function() {
-            $.getJSON(
-                /*[[@{/activities.json}]]*/ '/activities.json',
-                {
-                    ajax: 'true'
-                },
-                function(data) {
+            $.ajax({
+                url: /*[[@{/activities.json}]]*/ '/activities.json',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
                     var html = '<option value="">--Please select one--</option>';
-                    var len = data.length;
-                    for (var i = 0; i < len; i++) {
-                        html += '<option value="' + data[i].desc + '">'
-                            + data[i].desc
-                            + '</option>';
+                    if (data && data.length > 0) {
+                        for (var i = 0; i < data.length; i++) {
+                            html += '<option value="' + data[i].desc + '">'
+                                + data[i].desc
+                                + '</option>';
+                        }
                     }
-                    html += '</option>';
-
                     $('#activities').html(html);
-                });
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading activities: ', status, error);
+                    $('#activities').html('<option value="">Error loading activities</option>');
+                }
+            });
         });
     </script>
 </head>
@@ -68,10 +50,19 @@
 <div class="navbar navbar-fixed-top navbar-inverse">
     <div class="navbar-inner">
         <div class="container">
-            <a class="brand" href="#">
-                <span th:text="#{minutes.exercised}">Exercise Minutes</span>
-            </a>
-            <ul class="nav">
+            <a class="brand navbar-brand" th:href="@{/}">HealthSuite</a>
+            <ul class="nav pull-right">
+                <li th:if="${authenticated}">
+                    <a href="#">
+                        <span th:text="'Welcome, ' + ${username}"></span>
+                    </a>
+                </li>
+                <li th:if="${authenticated}">
+                    <a th:href="@{/logout}">Logout</a>
+                </li>
+                <li th:unless="${authenticated}">
+                    <a th:href="@{/login}">Login</a>
+                </li>
             </ul>
         </div>
     </div>
@@ -82,10 +73,10 @@
             <span th:text="#{minutes.exercised}">Exercise Minutes</span>
         </h1>
     </div>
-    <a class="btn" th:href="@{/addMinutes(language='en')}"> English </a>
-    <a class="btn" th:href="@{/addMinutes(language='es')}"> Spanish </a>
+    <a class="btn" th:href="@{/add-minutes(language='en')}"> English </a>
+    <a class="btn" th:href="@{/add-minutes(language='es')}"> Spanish </a>
     <br/><br/>
-    <form th:action="@{/addMinutes}" th:object="${exercise}" method="post">
+    <form th:action="@{/add-minutes}" th:object="${exercise}" method="post">
         <div th:if="${#fields.hasErrors('*')}" class="errorblock">
             <ul>
                 <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
@@ -117,7 +108,7 @@
     </span>
 </div>
 
-<script th:src="@{/assets/js/bootstrap.js}"></script>
+<script th:src="@{/js/bootstrap.js}"></script>
 </body>
 </html>
 

@@ -1,63 +1,215 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
 <head>
     <meta charset="utf-8">
     <title>HealthSuite - Home</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Le styles -->
-    <link th:href="@{/assets/css/bootstrap.css}" rel="stylesheet">
-    <style>
-        body {
-            padding-top: 60px;
-            /* 60px to make the container go all the way
-                 to the bottom of the topbar */
-        }
-    </style>
-    <link th:href="@{/assets/css/bootstrap-responsive.css}" rel="stylesheet">
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!-- Bootstrap CSS -->
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/css/bootstrap-responsive.css}" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link th:href="@{/css/navbar-styles.css}" rel="stylesheet">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <!-- Favicon -->
+    <link rel="shortcut icon" th:href="@{/favicon.ico}">
+    <!-- HTML5 shim for IE6-8 -->
     <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js">
-    </script>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <!-- Le fav and touch icons -->
-    <link rel="shortcut icon" th:href="@{/assets/ico/favicon.ico}">
-    <link rel="apple-touch-icon-precomposed" sizes="144x144"
-          th:href="@{/assets/ico/apple-touch-icon-144-precomposed.png}">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114"
-          th:href="@{/assets/ico/apple-touch-icon-114-precomposed.png}">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72"
-          th:href="@{/assets/ico/apple-touch-icon-72-precomposed.png}">
-    <link rel="apple-touch-icon-precomposed"
-          th:href="@{/assets/ico/apple-touch-icon-57-precomposed.png}">
 </head>
-<body>
-<div class="navbar navbar-fixed-top navbar-inverse">
-    <div class="navbar-inner">
-        <div class="container">
-            <a class="brand" th:href="@{/addGoal}"> Get started </a>
-            <ul class="nav">
-            </ul>
-        </div>
-    </div>
-</div>
-<div class="container">
-    <div class="hero-unit">
-        <div>
-            <h1>Welcome to Health Suite!</h1>
-            <p>To get started, we need to enter a goal for what we want to exercise for today.</p>
-        </div>
-        <a class="btn btn-primary" href="addRegistration.html"> Add Registration </a>
-        <a class="btn btn-primary" href="addUsers.html"> Add Users </a>
-        <br>
-        <a class="btn btn-primary" th:href="@{/addGoal}"> Add Goal </a>
-        <a class="btn btn-primary" th:href="@{/addMinutes}"> Add Exercise Minutes </a>
-    </div>
-    <div></div>
-</div>
 
-<script th:src="@{/jquery-1.8.3.js}"></script>
-<script th:src="@{/assets/js/bootstrap.js}"></script>
+<body>
+    <!-- Top Navigation Bar -->
+    <div class="navbar navbar-fixed-top navbar-inverse">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand navbar-brand" th:href="@{/}">HealthSuite</a>
+                <ul class="nav pull-right">
+                    <li th:if="${authenticated}">
+                        <a href="#">
+                            <span th:text="'Welcome, ' + ${username}"></span>
+                        </a>
+                    </li>
+                    <li th:if="${authenticated}">
+                        <a th:href="@{/logout}">Logout</a>
+                    </li>
+                    <li th:unless="${authenticated}">
+                        <a th:href="@{/login}">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Menu -->
+    <div class="sidebar">
+        <ul class="nav">
+            <li class="nav-header">Public Pages</li>
+            <li><a th:href="@{/}" class="active">🏠 Home</a></li>
+            <li><a th:href="@{/about}">ℹ️ About</a></li>
+            <li><a th:href="@{/contact}">📧 Contact Us</a></li>
+            
+            <li class="nav-header" th:if="${authenticated}">Main Menu</li>
+            <li th:if="${authenticated}"><a th:href="@{/exercises}">📊 Exercise Log</a></li>
+            <li th:if="${authenticated}"><a th:href="@{/add-exercise}">➕ Add Exercise</a></li>
+            <li th:if="${authenticated}"><a th:href="@{/add-goal}">🎯 Set Goal</a></li>
+            <li th:if="${authenticated}"><a th:href="@{/add-minutes}">⏱️ Log Minutes</a></li>
+            
+            <li class="nav-header" th:if="${authenticated}">User Management</li>
+            <li th:if="${authenticated}"><a th:href="@{/add-users}">👤 Add User</a></li>
+            <li th:if="${authenticated}"><a th:href="@{/add-registration}">📝 Registration</a></li>
+            
+            <li class="nav-header" th:if="${authenticated}">System</li>
+            <li th:if="${authenticated}"><a th:href="@{/h2}" target="_blank">🗄️ Database Console</a></li>
+        </ul>
+        
+        <div class="user-info" th:if="${authenticated}">
+            <div><strong>User:</strong> <span th:text="${username}"></span></div>
+        </div>
+        <div class="user-info" th:unless="${authenticated}">
+            <div style="text-align: center; padding: 10px;">
+                <a th:href="@{/login}">🔐 Login</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <!-- Welcome Card -->
+        <div class="welcome-card">
+            <h1>Welcome to HealthSuite!</h1>
+            <p th:if="${authenticated}">
+                Hello, <span th:text="${username}"></span>! Track your health and fitness journey with ease.
+            </p>
+            <p th:unless="${authenticated}">
+                Your comprehensive healthcare management system for tracking exercises, goals, and wellness.
+                <br><a th:href="@{/login}" style="color: white; text-decoration: underline; font-weight: bold;">Login</a> to access all features.
+            </p>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row">
+            <div class="span4">
+                <div class="stats-card">
+                    <h3>📈 Exercise Tracking</h3>
+                    <p>Monitor your daily exercise activities and track your progress over time.</p>
+                </div>
+            </div>
+            <div class="span4">
+                <div class="stats-card">
+                    <h3>🎯 Goal Setting</h3>
+                    <p>Set and achieve your fitness goals with personalized targets and milestones.</p>
+                </div>
+            </div>
+            <div class="span4">
+                <div class="stats-card">
+                    <h3>👥 User Management</h3>
+                    <p>Manage healthcare team members, roles, and access permissions efficiently.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions" th:if="${authenticated}">
+            <a th:href="@{/add-exercise}" class="action-card">
+                <div class="icon">➕</div>
+                <h4>Add Exercise</h4>
+                <p>Log your exercise activities and track your fitness progress</p>
+            </a>
+            
+            <a th:href="@{/exercises}" class="action-card">
+                <div class="icon">📊</div>
+                <h4>View Exercises</h4>
+                <p>Review your exercise history and analyze your activity patterns</p>
+            </a>
+            
+            <a th:href="@{/add-goal}" class="action-card">
+                <div class="icon">🎯</div>
+                <h4>Set Goals</h4>
+                <p>Define your fitness objectives and track your achievements</p>
+            </a>
+            
+            <a th:href="@{/add-minutes}" class="action-card">
+                <div class="icon">⏱️</div>
+                <h4>Log Minutes</h4>
+                <p>Record exercise duration and monitor your daily activity time</p>
+            </a>
+            
+            <a th:href="@{/add-users}" class="action-card">
+                <div class="icon">👤</div>
+                <h4>Manage Users</h4>
+                <p>Add and manage healthcare team members and their profiles</p>
+            </a>
+            
+            <a th:href="@{/add-registration}" class="action-card">
+                <div class="icon">📝</div>
+                <h4>Registration</h4>
+                <p>Register new users and manage healthcare team access</p>
+            </a>
+        </div>
+        
+        <!-- Public Quick Actions -->
+        <div class="quick-actions" th:unless="${authenticated}">
+            <a th:href="@{/login}" class="action-card">
+                <div class="icon">🔐</div>
+                <h4>Login</h4>
+                <p>Access your account to manage exercises, goals, and more</p>
+            </a>
+            
+            <a th:href="@{/about}" class="action-card">
+                <div class="icon">ℹ️</div>
+                <h4>About Us</h4>
+                <p>Learn more about HealthSuite and our mission</p>
+            </a>
+            
+            <a th:href="@{/contact}" class="action-card">
+                <div class="icon">📧</div>
+                <h4>Contact Us</h4>
+                <p>Get in touch with our support team</p>
+            </a>
+        </div>
+
+        <!-- Features Section -->
+        <div class="row" style="margin-top: 40px;">
+            <div class="span12">
+                <div class="stats-card">
+                    <h3>🌟 Key Features</h3>
+                    <ul style="list-style: none; padding: 0; margin: 20px 0 0 0;">
+                        <li style="padding: 10px 0; border-bottom: 1px solid #ecf0f1;">
+                            <strong>Exercise Management:</strong> Track various activities including running, biking, swimming, and more
+                        </li>
+                        <li style="padding: 10px 0; border-bottom: 1px solid #ecf0f1;">
+                            <strong>Goal Setting:</strong> Set personalized exercise goals and monitor your progress
+                        </li>
+                        <li style="padding: 10px 0; border-bottom: 1px solid #ecf0f1;">
+                            <strong>User Management:</strong> Comprehensive user and role management for healthcare teams
+                        </li>
+                        <li style="padding: 10px 0;">
+                            <strong>Secure Access:</strong> Role-based access control with Spring Security integration
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts - jQuery must load before Bootstrap -->
+    <script type="text/javascript" th:src="@{/jquery-1.8.3.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap.js}"></script>
+    <script type="text/javascript">
+        // Highlight active menu item - ensure jQuery is loaded
+        if (typeof jQuery !== 'undefined') {
+            jQuery(document).ready(function($) {
+                var currentPath = window.location.pathname;
+                $('.sidebar .nav li a').each(function() {
+                    var linkPath = $(this).attr('href');
+                    if (linkPath && currentPath.includes(linkPath.replace('/HealthSuite', ''))) {
+                        $(this).addClass('active');
+                    }
+                });
+            });
+        }
+    </script>
 </body>
 </html>
-

@@ -41,12 +41,30 @@ public class SecurityConfig {
 
     /**
      * UserDetailsService using JDBC.
-     * This replaces the XML-based jdbc-user-service.
+     * Uses custom queries to join user_roles and roles tables instead of authorities table.
+     * Spring Security expects authorities to be prefixed with "ROLE_", so we add that prefix.
      */
     @Bean
     public UserDetailsService userDetailsService() {
         JdbcDaoImpl jdbcUserDetailsService = new JdbcDaoImpl();
         jdbcUserDetailsService.setDataSource(dataSource);
+        
+        // Custom query to load user by username
+        jdbcUserDetailsService.setUsersByUsernameQuery(
+            "SELECT username, password, enabled FROM users WHERE username = ?"
+        );
+        
+        // Custom query to load authorities by joining user_roles and roles tables
+        // Spring Security expects "ROLE_" prefix, so we add it
+        // Using || operator for H2 database compatibility (also works with CONCAT)
+        jdbcUserDetailsService.setAuthoritiesByUsernameQuery(
+            "SELECT u.username, 'ROLE_' || r.name as authority " +
+            "FROM users u " +
+            "INNER JOIN user_roles ur ON u.id = ur.user_id " +
+            "INNER JOIN roles r ON ur.role_id = r.id " +
+            "WHERE u.username = ?"
+        );
+        
         return jdbcUserDetailsService;
     }
 
@@ -75,9 +93,11 @@ public class SecurityConfig {
         http
             .authenticationProvider(authenticationProvider)
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/h2/**", "/h2-console/**", "/login", "/login/**",
-                                 "/jquery-1.8.3.js", "/favicon.ico", "/assets/**", "/pdfs/**").permitAll()
-                .anyRequest().hasRole("USER")
+                .requestMatchers("/", "/about", "/contact", "/contact-us",
+                                 "/h2/**", "/h2-console/**", "/login", "/login/**",
+                                 "/jquery-1.8.3.js", "/favicon.ico", "/assets/**", "/pdfs/**",
+                                 "/css/**", "/js/**", "/images/**").permitAll()
+                .anyRequest().authenticated()
             )
             .csrf(csrf -> csrf
                 .ignoringRequestMatchers("/h2/**", "/h2-console/**")
@@ -86,7 +106,17 @@ public class SecurityConfig {
                 .frameOptions(frameOptions -> frameOptions.sameOrigin())
             )
             .formLogin(formLogin -> formLogin
+                .loginPage("/login")
+                .loginProcessingUrl("/login")
                 .defaultSuccessUrl("/", true)
+                .failureUrl("/login?error=true")
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/?logout")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
                 .permitAll()
             );
         return http.build();
