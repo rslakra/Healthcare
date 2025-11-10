@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8">
+    <title>Login - HealthSuite</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link th:href="@{/css/bootstrap.css}" rel="stylesheet">
+    <link th:href="@{/css/bootstrap-responsive.css}" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link th:href="@{/css/navbar-styles.css}" rel="stylesheet">
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <!-- Favicon -->
+    <link rel="shortcut icon" th:href="@{/favicon.ico}">
+    <!-- HTML5 shim for IE6-8 -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <!-- Top Navigation Bar -->
+    <div class="navbar navbar-fixed-top navbar-inverse">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand navbar-brand" th:href="@{/}">HealthSuite</a>
+                <ul class="nav pull-right">
+                    <li>
+                        <a th:href="@{/}">Home</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Container -->
+    <div class="login-container">
+        <div class="login-card">
+            <h1>🔐 Login</h1>
+            <p>Sign in to your HealthSuite account</p>
+            
+            <!-- Error Message -->
+            <div th:if="${param.error}" class="error-message">
+                Invalid username or password. Please try again.
+            </div>
+            
+            <!-- Logout Message -->
+            <div th:if="${param.logout}" class="logout-message">
+                You have been successfully logged out.
+            </div>
+            
+            <!-- Login Form -->
+            <form th:action="@{/login}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required autofocus 
+                           placeholder="Enter your username"/>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required 
+                           placeholder="Enter your password"/>
+                </div>
+                
+                <button type="submit" class="btn-login">Login</button>
+            </form>
+            
+            <div class="back-link">
+                <a th:href="@{/}">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts - jQuery must load before Bootstrap -->
+    <script type="text/javascript" th:src="@{/jquery-1.8.3.js}"></script>
+    <script type="text/javascript">
+        // Ensure jQuery is loaded before Bootstrap
+        if (typeof jQuery === 'undefined') {
+            console.error('jQuery is not loaded!');
+        }
+    </script>
+    <script type="text/javascript" th:src="@{/js/bootstrap.js}"></script>
+</body>
+</html>
+
