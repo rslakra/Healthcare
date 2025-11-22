@@ -117,6 +117,14 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on -->
+        <!-- Required for Argon2PasswordEncoder -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk18on</artifactId>
+            <version>1.78.1</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/org.owasp.encoder/encoder -->
         <dependency>
             <groupId>org.owasp.encoder</groupId>

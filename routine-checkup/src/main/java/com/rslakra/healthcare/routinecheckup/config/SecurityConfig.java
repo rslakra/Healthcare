@@ -46,12 +46,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
+                // Permit static resources
+                .antMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/static/**").permitAll()
+                // Permit H2 console (for development - disable in production)
+                .antMatchers("/h2/**", "/h2-console/**").permitAll()
+                // Permit login and registration
                 .antMatchers(HttpMethod.POST, ViewNames.LOGIN_URL).permitAll()
                 .antMatchers(ViewNames.REGISTRATION_URL).permitAll()
                 .antMatchers(ViewNames.REGISTRATION_URL + "/**")
                 .permitAll()
+                // Admin paths
                 .antMatchers(ViewNames.ADMIN_BASE_PATH + "**")
                 .hasRole(RoleNames.ADMIN.getValue())
+                // All other paths require authentication
                 .antMatchers("/**")
                 .hasRole(RoleNames.USER.getValue())
                 .anyRequest().authenticated()
@@ -66,15 +73,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessHandler(customLogoutSuccessHandler)
                 .permitAll()
                 .and()
-                .requiresChannel().anyRequest().requiresSecure()
-                .and()
+                // Disabled HTTPS requirement for development (SSL is disabled)
+                // Uncomment the next line when SSL is enabled in production:
+                // .requiresChannel().anyRequest().requiresSecure()
+                // .and()
                 .csrf()
                 .csrfTokenRepository(customCsrfTokenRepository)
                 .ignoringAntMatchers(
                         ViewNames.LOGIN_URL,
-                        ViewNames.REGISTRATION_URL
+                        ViewNames.REGISTRATION_URL,
+                        "/h2/**",
+                        "/h2-console/**"
                 )
                 .sessionAuthenticationStrategy(new NullAuthenticatedSessionStrategy())
+                .and()
+                // Disable frame options for H2 console
+                .headers().frameOptions().sameOrigin()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
