@@ -232,9 +232,13 @@
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
-                <version>5.3.2</version>
+                <version>9.0.9</version>
                 <configuration>
                     <failBuildOnCVSS>10</failBuildOnCVSS>
+                    <!-- Don't fail the build if updates fail, use cached data instead -->
+                    <failOnError>false</failOnError>
+                    <!-- Optional: Add NVD API key if you have one (get free key from https://nvd.nist.gov/developers/request-an-api-key) -->
+                    <!-- <nvdApiKey>YOUR_API_KEY_HERE</nvdApiKey> -->
                 </configuration>
                 <executions>
                     <execution>

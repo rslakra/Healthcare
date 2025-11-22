@@ -4,9 +4,9 @@ plugins {
     id 'java'
 }
 
-group = 'com.rslakra.health.routinechekup'
+group = 'com.rslakra.healthcare.routinecheckup'
 version = '0.0.1-SNAPSHOT'
-//sourceCompatibility = '23'
+sourceCompatibility = '21'
 
 configurations {
     compileOnly {
