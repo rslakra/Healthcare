@@ -4,14 +4,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.map.repository.config.EnableMapRepositories;
-import org.springframework.scheduling.annotation.EnableAsync;
 
 @PropertySource(value = {
     "classpath:messages.properties",
     "classpath:mail_messages.properties"
 }, encoding = "UTF-8")
 @EnableMapRepositories
-@EnableAsync
 @SpringBootApplication
 public class RoutineCheckupApplication {
 

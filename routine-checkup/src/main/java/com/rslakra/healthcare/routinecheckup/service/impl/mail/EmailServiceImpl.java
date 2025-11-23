@@ -136,8 +136,9 @@ public class EmailServiceImpl implements EmailService {
 
     /**
      * Sends email asynchronously to avoid blocking the main request thread
+     * Uses the dedicated emailTaskExecutor thread pool
      */
-    @Async
+    @Async("emailTaskExecutor")
     public CompletableFuture<Void> sendEmailAsync(String to, String subject, String body, EmailType emailType) {
         try {
             sendMessage(to, subject, body);

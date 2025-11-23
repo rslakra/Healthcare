@@ -63,19 +63,23 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
+        long startTime = System.currentTimeMillis();
         Optional<UserEntity> userOptional = userRepository.findByLogin(username);
+        long dbTime = System.currentTimeMillis() - startTime;
+        
         if (userOptional.isEmpty()) {
-            log.warn("Login attempt failed: User '{}' not found", username);
-            throw new UsernameNotFoundException(username);
+            log.warn("Login attempt failed: User '{}' not found (DB query took {} ms)", username, dbTime);
+            throw new UsernameNotFoundException("User not found: " + username);
         }
         
         UserEntity user = userOptional.get();
         if (user.getIsTemporary()) {
-            log.warn("Login attempt failed: User '{}' has not completed registration (temporary account)", username);
-            throw new UsernameNotFoundException(username);
+            log.warn("Login attempt failed: User '{}' has not completed registration (temporary account, DB query took {} ms)", username, dbTime);
+            throw new UsernameNotFoundException("Temporary account: " + username);
         }
 
-        log.debug("User '{}' loaded successfully for authentication", username);
+        long totalTime = System.currentTimeMillis() - startTime;
+        log.debug("User '{}' loaded successfully for authentication (total time: {} ms, DB: {} ms)", username, totalTime, dbTime);
         UserDetails result = dtoUtils.getUserDetails(user);
         return result;
     }
