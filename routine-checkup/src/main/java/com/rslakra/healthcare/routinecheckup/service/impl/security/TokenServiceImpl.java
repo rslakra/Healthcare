@@ -1,16 +1,21 @@
 package com.rslakra.healthcare.routinecheckup.service.impl.security;
 
 import com.rslakra.healthcare.routinecheckup.entity.UserEntity;
-import com.rslakra.healthcare.routinecheckup.service.security.TokenComponent;
+import com.rslakra.healthcare.routinecheckup.service.security.TokenService;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.JwtConstants;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.Messages;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.RegistrationConstants;
 import com.rslakra.healthcare.routinecheckup.exceptions.JwtTokenExpiredException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.impl.DefaultClaims;
+
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
+
+import static java.util.concurrent.TimeUnit.SECONDS;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
@@ -28,7 +33,7 @@ import java.util.Optional;
  */
 @Component
 @RequiredArgsConstructor
-public class TokenComponentImpl implements TokenComponent {
+public class TokenServiceImpl implements TokenService {
 
     private final JwtConstants jwtConstants;
     private final RegistrationConstants registrationConstants;
@@ -51,7 +56,8 @@ public class TokenComponentImpl implements TokenComponent {
 
     @Override
     public DefaultClaims parse(String token) {
-        DefaultClaims body = (DefaultClaims) Jwts.parser().setSigningKey(jwtConstants.getJwtKey()).build().parse(token).getBody();
+        SecretKey key = Keys.hmacShaKeyFor(jwtConstants.getJwtKey().getBytes(StandardCharsets.UTF_8));
+        DefaultClaims body = (DefaultClaims) Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
 
         validateTokenClaims(body);
 
@@ -60,7 +66,8 @@ public class TokenComponentImpl implements TokenComponent {
 
     @Override
     public DefaultClaims parseRegistrationToken(String token) {
-        DefaultClaims body = (DefaultClaims) Jwts.parser().setSigningKey(registrationConstants.getRegistrationTokenKey()).build().parse(token).getBody();
+        SecretKey key = Keys.hmacShaKeyFor(registrationConstants.getRegistrationTokenKey().getBytes(StandardCharsets.UTF_8));
+        DefaultClaims body = (DefaultClaims) Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
 
         validateTokenClaims(body);
 
@@ -122,10 +129,16 @@ public class TokenComponentImpl implements TokenComponent {
     private String generateToken(String login, Long tokenLifeMs, String tokenKey, String loginFieldName) {
         Map<String, Object> claims = getBaseClaims(login, loginFieldName);
         Long issuedAtSeconds = (Long) claims.get(Claims.ISSUED_AT);
-        Long issuedAtMs = issuedAtSeconds == null ? (new Date()).getTime() : issuedAtSeconds * MILLIS_IN_SECOND;
+        Long issuedAtMs = issuedAtSeconds == null ? (new Date()).getTime() : issuedAtSeconds * SECONDS.toMillis(1);
         long expirationAtMs = issuedAtMs + tokenLifeMs;
 
-        String result = Jwts.builder().setClaims(claims).setExpiration(new Date(expirationAtMs)).signWith(SignatureAlgorithm.HS512, tokenKey).compact();
+        // Convert string key to SecretKey for HS512 (requires at least 512 bits = 64 characters)
+        SecretKey key = Keys.hmacShaKeyFor(tokenKey.getBytes(StandardCharsets.UTF_8));
+        String result = Jwts.builder()
+                .claims(claims)
+                .expiration(new Date(expirationAtMs))
+                .signWith(key)
+                .compact();
 
         return result;
     }
@@ -138,7 +151,7 @@ public class TokenComponentImpl implements TokenComponent {
     private Map<String, Object> getBaseClaims(String username, String loginFieldName) {
         Map<String, Object> claims = new HashMap<>();
         Date issuedAt = new Date();
-        long issuedAtSeconds = issuedAt.getTime() / MILLIS_IN_SECOND;
+        long issuedAtSeconds = issuedAt.getTime() / SECONDS.toMillis(1);
         claims.put(Claims.ISSUED_AT, issuedAtSeconds);
         claims.put(Claims.NOT_BEFORE, issuedAtSeconds);
         claims.put(loginFieldName, username);
@@ -147,3 +160,4 @@ public class TokenComponentImpl implements TokenComponent {
     }
 
 }
+

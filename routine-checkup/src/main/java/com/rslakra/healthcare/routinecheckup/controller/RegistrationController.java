@@ -3,7 +3,7 @@ package com.rslakra.healthcare.routinecheckup.controller;
 import com.rslakra.healthcare.routinecheckup.dto.UserRequestDto;
 import com.rslakra.healthcare.routinecheckup.dto.request.DoctorRequestDto;
 import com.rslakra.healthcare.routinecheckup.service.DoctorService;
-import com.rslakra.healthcare.routinecheckup.service.UserRegistrationAttemptsService;
+import com.rslakra.healthcare.routinecheckup.service.AuthAttemptsService;
 import com.rslakra.healthcare.routinecheckup.service.UserService;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.CaptchaConstants;
 import com.rslakra.healthcare.routinecheckup.utils.constants.ModelAttributesNames;
@@ -30,7 +30,7 @@ public class RegistrationController {
     private static final String CAPTCHA_RESPONSE_PARAM_NAME = "g-recaptcha-response";
     private final CaptchaConstants captchaConstants;
     private final UserService userService;
-    private final UserRegistrationAttemptsService userRegistrationAttemptsService;
+    private final AuthAttemptsService authAttemptsService;
     private final DoctorService doctorService;
 
     @GetMapping(value = ViewNames.REGISTRATION_URL)
@@ -43,7 +43,7 @@ public class RegistrationController {
         model.addAttribute(ModelAttributesNames.CAPTCHA_SITE_KEY, captchaConstants.getSiteKey());
 
         String userIp = request.getRemoteAddr();
-        boolean extraCurrentRegistration = userRegistrationAttemptsService.isExtraCurrentRegistration(userIp);
+        boolean extraCurrentRegistration = authAttemptsService.isExtraCurrentRegistration(userIp);
         model.addAttribute(ModelAttributesNames.IS_EXTRA_REGISTRATION, extraCurrentRegistration);
 
         return ViewNames.REGISTRATION_VIEW_NAME;

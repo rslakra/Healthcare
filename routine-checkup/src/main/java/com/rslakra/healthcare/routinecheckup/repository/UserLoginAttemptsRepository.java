@@ -1,6 +1,6 @@
-package com.rslakra.healthcare.routinecheckup.keyvalue.repository;
+package com.rslakra.healthcare.routinecheckup.repository;
 
-import com.rslakra.healthcare.routinecheckup.keyvalue.entity.UserLoginAttempts;
+import com.rslakra.healthcare.routinecheckup.entity.UserLoginAttempts;
 import org.springframework.data.keyvalue.repository.KeyValueRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,3 +12,4 @@ import org.springframework.stereotype.Repository;
 public interface UserLoginAttemptsRepository extends KeyValueRepository<UserLoginAttempts, String> {
 
 }
+

@@ -1,7 +1,7 @@
 package com.rslakra.healthcare.routinecheckup.service.impl;
 
 import com.rslakra.healthcare.routinecheckup.dto.security.ReCaptchaGoogleResponse;
-import com.rslakra.healthcare.routinecheckup.service.ReCaptchaApproveComponent;
+import com.rslakra.healthcare.routinecheckup.service.CaptchaService;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.CaptchaConstants;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.Messages;
 import com.rslakra.healthcare.routinecheckup.exceptions.CaptchaFailedException;
@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  */
 @Component
 @RequiredArgsConstructor
-public class ReCaptchaApproveComponentImpl implements ReCaptchaApproveComponent {
+public class CaptchaServiceImpl implements CaptchaService {
 
     private static final Pattern RESPONSE_PATTERN = Pattern.compile("[A-Za-z0-9_-]+");
     private final RestOperations restOperations;
@@ -60,3 +60,4 @@ public class ReCaptchaApproveComponentImpl implements ReCaptchaApproveComponent 
         return result;
     }
 }
+

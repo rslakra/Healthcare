@@ -3,7 +3,7 @@ package com.rslakra.healthcare.routinecheckup.service.impl;
 import com.rslakra.healthcare.routinecheckup.dto.response.DoctorPaymentDto;
 import com.rslakra.healthcare.routinecheckup.service.DoctorService;
 import com.rslakra.healthcare.routinecheckup.service.FinancialReportService;
-import com.rslakra.healthcare.routinecheckup.service.XPathComponent;
+import com.rslakra.healthcare.routinecheckup.service.XPathService;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.FileStorageConstants;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -27,20 +27,20 @@ public class FinancialReportServiceImpl implements FinancialReportService {
     private static final String GET_FINANCIAL_BY_DOCTOR_ID_EXPRESSION_TEMPLATE
             = "/salary/staff/doctors/doc[@doc_id=\"%s\"]/payment";
 
-    private final XPathComponent xPathComponent;
+    private final XPathService xPathService;
     private final DoctorService doctorService;
     private final FileStorageConstants fileStorageConstants;
 
 
     @Override
     public DoctorPaymentDto getCurrentMonthPayment(String userLogin, String doctorId) {
-        String doctorIdStr = xPathComponent.sanitizeExpressionParam(doctorId);
+        String doctorIdStr = xPathService.sanitizeExpressionParam(doctorId);
         String formattedExpr = String.format(GET_FINANCIAL_BY_DOCTOR_ID_EXPRESSION_TEMPLATE, doctorIdStr);
         String financialReportPath = fileStorageConstants.getFinancialReportPath();
 
         NodeList nodeList;
         try {
-            nodeList = xPathComponent.evaluateXpathExpression(formattedExpr, financialReportPath);
+            nodeList = xPathService.evaluateXpathExpression(formattedExpr, financialReportPath);
         } catch (FileNotFoundException e) {
             LOGGER.error(e.getMessage(), e);
             return null;

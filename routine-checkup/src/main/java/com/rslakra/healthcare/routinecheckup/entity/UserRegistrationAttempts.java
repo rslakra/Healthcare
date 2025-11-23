@@ -1,4 +1,4 @@
-package com.rslakra.healthcare.routinecheckup.keyvalue.entity;
+package com.rslakra.healthcare.routinecheckup.entity;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -9,12 +9,12 @@ import java.util.Date;
 
 /**
  * @author Rohtash Lakra
- * @created 8/12/21 4:11 PM
+ * @created 8/12/21 4:12 PM
  */
-@KeySpace("user_login_attempts")
+@KeySpace("user_registration_attempts")
 @Getter
 @Setter
-public class UserLoginAttempts {
+public class UserRegistrationAttempts {
 
     @Id
     private String userIp;
@@ -23,10 +23,11 @@ public class UserLoginAttempts {
 
     private Integer currentAttemptsCount;
 
-    public UserLoginAttempts(String userIp) {
+    public UserRegistrationAttempts(String userIp) {
         this.userIp = userIp;
         lastAttemptDate = new Date();
         currentAttemptsCount = 1;
     }
 
 }
+

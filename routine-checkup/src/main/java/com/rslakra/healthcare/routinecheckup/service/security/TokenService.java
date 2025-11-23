@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
-public interface TokenComponent {
+public interface TokenService {
 
     Integer MILLIS_IN_SECOND = 1000;
 
@@ -31,3 +31,4 @@ public interface TokenComponent {
     Optional<String> getTokenFromRequest(HttpServletRequest request);
 
 }
+

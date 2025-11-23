@@ -1,6 +1,6 @@
 package com.rslakra.healthcare.routinecheckup.service.impl;
 
-import com.rslakra.healthcare.routinecheckup.service.XPathComponent;
+import com.rslakra.healthcare.routinecheckup.service.XPathService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -25,10 +25,10 @@ import javax.xml.xpath.XPathFactory;
  * @created 8/12/21 4:21 PM
  */
 @Component
-public class XPathComponentImpl implements XPathComponent {
+public class XPathServiceImpl implements XPathService {
 
     private final Logger logger
-        = LoggerFactory.getLogger(XPathComponentImpl.class);
+        = LoggerFactory.getLogger(XPathServiceImpl.class);
 
     @Override
     public NodeList evaluateXpathExpression(

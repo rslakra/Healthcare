@@ -1,6 +1,6 @@
 package com.rslakra.healthcare.routinecheckup.service.impl.security;
 
-import com.rslakra.healthcare.routinecheckup.service.security.TokenComponent;
+import com.rslakra.healthcare.routinecheckup.service.security.TokenService;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.JwtConstants;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.WebConstants;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +25,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final TokenComponent tokenComponent;
+    private final TokenService tokenService;
     private final JwtConstants jwtConstants;
     private final WebConstants webConstants;
 
@@ -37,8 +37,8 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     ) throws IOException, ServletException {
         UserDetails principal = (UserDetails) authentication.getPrincipal();
 
-        long maxAge = jwtConstants.getExpirationTimeMs().intValue() / TokenComponent.MILLIS_IN_SECOND;
-        String token = tokenComponent.generateToken(principal);
+        long maxAge = jwtConstants.getExpirationTimeMs().intValue() / TokenService.MILLIS_IN_SECOND;
+        String token = tokenService.generateToken(principal);
         ResponseCookie cookie = ResponseCookie
                 .from(jwtConstants.getParameterName(), token)
                 .sameSite(webConstants.getSameSite())

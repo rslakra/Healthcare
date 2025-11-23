@@ -1,6 +1,6 @@
 package com.rslakra.healthcare.routinecheckup.service.filter;
 
-import com.rslakra.healthcare.routinecheckup.service.UserLoginAttemptsService;
+import com.rslakra.healthcare.routinecheckup.service.AuthAttemptsService;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.Messages;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.WebConstants;
 import com.rslakra.healthcare.routinecheckup.utils.constants.ViewNames;
@@ -25,7 +25,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 public class LoginAttemptCountFilter extends OncePerRequestFilter {
 
-    private final UserLoginAttemptsService userLoginAttemptsService;
+    private final AuthAttemptsService authAttemptsService;
 
     private final WebConstants webConstants;
 
@@ -43,7 +43,7 @@ public class LoginAttemptCountFilter extends OncePerRequestFilter {
         }
 
         String userIp = request.getRemoteAddr();
-        if (userLoginAttemptsService.isExtraCurrentLogin(userIp)) {
+        if (authAttemptsService.isExtraCurrentLogin(userIp)) {
             throw new AttemptsCountExceedException(messages.getAttemptCountExceed());
         }
 

@@ -1,4 +1,4 @@
-package com.rslakra.healthcare.routinecheckup.keyvalue.entity;
+package com.rslakra.healthcare.routinecheckup.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,3 +21,4 @@ public class UserCsrfToken {
     private CsrfToken token;
 
 }
+

@@ -1,7 +1,7 @@
 package com.rslakra.healthcare.routinecheckup.service.filter;
 
 import com.rslakra.healthcare.routinecheckup.dto.security.JwtTokenAuthentication;
-import com.rslakra.healthcare.routinecheckup.service.security.TokenComponent;
+import com.rslakra.healthcare.routinecheckup.service.security.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,7 +28,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final UserDetailsService userDetailsService;
 
-    private final TokenComponent tokenComponent;
+    private final TokenService tokenService;
 
     @Override
     protected void doFilterInternal(
@@ -37,7 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         FilterChain filterChain
     ) throws ServletException, IOException {
         Optional<String> tokenOpt
-            = tokenComponent.getTokenFromRequest(request);
+            = tokenService.getTokenFromRequest(request);
         if (!tokenOpt.isPresent()) {
             SecurityContextHolder.getContext().setAuthentication(null);
             filterChain.doFilter(request, response);
@@ -45,7 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         String token = tokenOpt.get();
 
-        String login = tokenComponent.getLoginFromToken(token);
+        String login = tokenService.getLoginFromToken(token);
         UserDetails userDetails
             = userDetailsService.loadUserByUsername(login);
         Authentication result = new JwtTokenAuthentication(userDetails, token);
