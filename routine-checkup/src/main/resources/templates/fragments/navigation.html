@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+    <!-- Navigation Fragment -->
+    <div th:fragment="nav" class="header">
+        <div class="nav-container">
+            <a th:href="@{/doctors_and_patients_list}" class="logo">Routine Checkup</a>
+            <ul class="nav-menu">
+                <li><a th:href="@{/doctors_and_patients_list}" 
+                        th:classappend="${#httpServletRequest.requestURI.contains('/doctors_and_patients_list') or #httpServletRequest.requestURI == '/routine-checkup/' ? 'active' : ''}">📊 Dashboard</a></li>
+                <li><a th:href="@{/doctors}" 
+                        th:classappend="${#httpServletRequest.requestURI.contains('/doctors') and not #httpServletRequest.requestURI.contains('/update_doctor') ? 'active' : ''}">🔍 Search Doctors</a></li>
+                <li><a th:href="@{/monthly_report}" 
+                        th:classappend="${#httpServletRequest.requestURI.contains('/monthly_report') or #httpServletRequest.requestURI.contains('/rename_report') ? 'active' : ''}">📄 Reports</a></li>
+                <li><a th:href="@{/services?act_type=online}" 
+                        th:classappend="${#httpServletRequest.requestURI.contains('/services') ? 'active' : ''}">💼 Services</a></li>
+                <li sec:authorize="hasRole('ADMIN')">
+                    <a th:href="@{/admin}" 
+                       th:classappend="${#httpServletRequest.requestURI.contains('/admin') ? 'active' : ''}">👨‍💼 Admin</a>
+                </li>
+                <li>
+                    <form th:action="@{/logout}" method="POST" style="display: inline;">
+                        <button type="submit" class="btn-logout">🚪 Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
+

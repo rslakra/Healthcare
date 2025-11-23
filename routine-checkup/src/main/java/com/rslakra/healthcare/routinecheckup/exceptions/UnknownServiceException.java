@@ -1,13 +1,14 @@
-package com.rslakra.healthcare.routinecheckup.utils.exceptions;
+package com.rslakra.healthcare.routinecheckup.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class IncorrectFIleException extends RuntimeException {
+public class UnknownServiceException extends RuntimeException {
 
-    public IncorrectFIleException(String message) {
+    public UnknownServiceException(String message) {
         super(message);
     }
 
 }
+

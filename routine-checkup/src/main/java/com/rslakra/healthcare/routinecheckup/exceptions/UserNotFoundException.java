@@ -1,4 +1,4 @@
-package com.rslakra.healthcare.routinecheckup.utils.exceptions;
+package com.rslakra.healthcare.routinecheckup.exceptions;
 
 public class UserNotFoundException extends RuntimeException {
 
@@ -7,3 +7,4 @@ public class UserNotFoundException extends RuntimeException {
     }
 
 }
+

@@ -2,23 +2,61 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Doctors</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Doctors - Routine Checkup</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
-<h3 th:if="${doctors.getSearchString() != null}">You entered:</h3>
-<h4 th:if="${doctors.getSearchString() != null}"
-    th:text="${doctors.getSearchString()}"></h4>
-<table border="1" id="docs_table">
-    <tr>
-        <th>Speciality</th>
-        <th>Last name</th>
-        <th>First name</th>
-    </tr>
-    <tr th:each="doc : ${doctors.getDoctors()}">
-        <td th:text="${doc.getSpeciality()}"></td>
-        <td th:text="${doc.getLastName()}"></td>
-        <td th:text="${doc.getFirstName()}"></td>
-    </tr>
-</table>
+    <div th:replace="~{fragments/navigation :: nav}"></div>
+    
+    <div class="container fade-in">
+        <div class="page-header">
+            <h1>🔍 Search Doctors</h1>
+            <p>Find the right specialist for your needs</p>
+        </div>
+
+        <div class="search-section">
+            <form th:action="@{/doctors}" method="GET">
+                <div class="search-form">
+                    <input type="text" name="searchStr" placeholder="Search by name, specialty, or any keyword..." 
+                           th:value="${doctors.getSearchString()}" style="flex: 1;">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </form>
+        </div>
+
+        <div th:if="${doctors.getSearchString() != null}" class="alert alert-info">
+            <strong>Search Results for:</strong> <span th:text="${doctors.getSearchString()}"></span>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h2>Available Doctors</h2>
+            </div>
+            <div class="table-container">
+                <table id="docs_table">
+                    <thead>
+                        <tr>
+                            <th>Specialty</th>
+                            <th>Last Name</th>
+                            <th>First Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="doc : ${doctors.getDoctors()}">
+                            <td><strong th:text="${doc.getSpeciality()}"></strong></td>
+                            <td th:text="${doc.getLastName()}"></td>
+                            <td th:text="${doc.getFirstName()}"></td>
+                        </tr>
+                        <tr th:if="${doctors.getDoctors().isEmpty()}">
+                            <td colspan="3" style="text-align: center; color: var(--text-light); padding: 2rem;">
+                                No doctors found. Try a different search term.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

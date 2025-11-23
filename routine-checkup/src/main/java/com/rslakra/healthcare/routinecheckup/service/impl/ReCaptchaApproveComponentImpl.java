@@ -4,7 +4,7 @@ import com.rslakra.healthcare.routinecheckup.dto.security.ReCaptchaGoogleRespons
 import com.rslakra.healthcare.routinecheckup.service.ReCaptchaApproveComponent;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.CaptchaConstants;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.Messages;
-import com.rslakra.healthcare.routinecheckup.utils.exceptions.CaptchaFailedException;
+import com.rslakra.healthcare.routinecheckup.exceptions.CaptchaFailedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;

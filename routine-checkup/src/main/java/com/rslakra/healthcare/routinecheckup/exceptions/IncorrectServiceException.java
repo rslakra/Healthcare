@@ -1,13 +1,14 @@
-package com.rslakra.healthcare.routinecheckup.utils.exceptions;
+package com.rslakra.healthcare.routinecheckup.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class CaptchaFailedException extends RuntimeException {
+public class IncorrectServiceException extends RuntimeException {
 
-    public CaptchaFailedException(String message) {
+    public IncorrectServiceException(String message) {
         super(message);
     }
 
 }
+

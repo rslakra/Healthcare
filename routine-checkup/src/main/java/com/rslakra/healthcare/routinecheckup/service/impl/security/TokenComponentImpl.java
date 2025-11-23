@@ -5,7 +5,7 @@ import com.rslakra.healthcare.routinecheckup.service.security.TokenComponent;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.JwtConstants;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.Messages;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.RegistrationConstants;
-import com.rslakra.healthcare.routinecheckup.utils.exceptions.JwtTokenExpiredException;
+import com.rslakra.healthcare.routinecheckup.exceptions.JwtTokenExpiredException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

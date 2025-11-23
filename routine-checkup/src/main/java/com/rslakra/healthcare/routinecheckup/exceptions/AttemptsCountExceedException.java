@@ -1,4 +1,4 @@
-package com.rslakra.healthcare.routinecheckup.utils.exceptions;
+package com.rslakra.healthcare.routinecheckup.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
@@ -12,3 +12,4 @@ public class AttemptsCountExceedException extends AuthenticationException {
     }
 
 }
+

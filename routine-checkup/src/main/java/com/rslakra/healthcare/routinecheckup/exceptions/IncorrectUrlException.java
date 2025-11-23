@@ -1,4 +1,4 @@
-package com.rslakra.healthcare.routinecheckup.utils.exceptions;
+package com.rslakra.healthcare.routinecheckup.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -15,3 +15,4 @@ public class IncorrectUrlException extends RuntimeException {
     }
 
 }
+

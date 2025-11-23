@@ -55,4 +55,10 @@ public class UserRequestDto {
     @Email
     private String mail;
 
+    @JsonProperty("role")
+    private String role; // Role selection for registration (PATIENT, DOCTOR, NURSE, etc.)
+
+    @JsonProperty("specialization")
+    private String specialization; // Specialization for DOCTOR or NURSE roles
+
 }

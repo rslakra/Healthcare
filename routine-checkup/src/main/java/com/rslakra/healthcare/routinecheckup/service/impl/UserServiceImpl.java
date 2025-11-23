@@ -15,11 +15,11 @@ import com.rslakra.healthcare.routinecheckup.service.security.TokenComponent;
 import com.rslakra.healthcare.routinecheckup.utils.components.DtoUtils;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.FileStorageConstants;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.Messages;
-import com.rslakra.healthcare.routinecheckup.utils.exceptions.IncorrectUrlException;
-import com.rslakra.healthcare.routinecheckup.utils.exceptions.UserMismatchException;
-import com.rslakra.healthcare.routinecheckup.utils.exceptions.UserNotFoundException;
-import com.rslakra.healthcare.routinecheckup.utils.exceptions.UserValidationException;
-import com.rslakra.healthcare.routinecheckup.utils.security.RoleNames;
+import com.rslakra.healthcare.routinecheckup.exceptions.IncorrectUrlException;
+import com.rslakra.healthcare.routinecheckup.exceptions.UserMismatchException;
+import com.rslakra.healthcare.routinecheckup.exceptions.UserNotFoundException;
+import com.rslakra.healthcare.routinecheckup.exceptions.UserValidationException;
+import com.rslakra.healthcare.routinecheckup.utils.security.Roles;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.owasp.encoder.Encode;
@@ -96,7 +96,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponseDto registerNewUser(@NonNull UserRequestDto user, String captchaResponse, RoleNames roleName, String userIp) {
+    public UserResponseDto registerNewUser(@NonNull UserRequestDto user, String captchaResponse, Roles roleName, String userIp) {
         UserRequestDto sanitizedUser = dtoUtils.sanitizeUser(user);
         boolean extraLastRegistration = userRegistrationAttemptsService.isExtraLastRegistration(userIp);
         if (extraLastRegistration) {
@@ -106,11 +106,8 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = dtoUtils.convertUser(sanitizedUser);
         String encodedPassword = passwordEncoder.encode(userEntity.getPassword());
         userEntity.setPassword(encodedPassword);
-        Optional<RoleEntity> roleOpt = roleService.findByName(roleName.getValue());
-        RoleEntity role = roleOpt.orElseThrow(() -> {
-            String message = String.format("A role named \"%s\" does not exist", roleName.getValue());
-            return new RuntimeException(message);
-        });
+        // Ensure role exists (create if not found - fallback in case DataInitializer hasn't run)
+        RoleEntity role = roleService.createIfNotExists(roleName.getValue());
         userEntity.setRole(role);
         userEntity.setIsTemporary(true);
 

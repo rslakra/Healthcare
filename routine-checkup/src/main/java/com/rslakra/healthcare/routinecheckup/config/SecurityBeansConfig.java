@@ -1,6 +1,6 @@
 package com.rslakra.healthcare.routinecheckup.config;
 
-import com.rslakra.healthcare.routinecheckup.utils.security.RoleNames;
+import com.rslakra.healthcare.routinecheckup.utils.security.Roles;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -38,11 +38,13 @@ public class SecurityBeansConfig {
     public RoleHierarchy roleHierarchy() {
         RoleHierarchyImpl hierarchy = new RoleHierarchyImpl();
 
-        String hierarchyRepresentation
-                = String.format(
-                "ROLE_%s > ROLE_%s",
-                RoleNames.ADMIN.getValue(),
-                RoleNames.USER.getValue()
+        // Healthcare role hierarchy: ADMIN > DOCTOR > NURSE > PATIENT
+        String hierarchyRepresentation = String.format(
+                "ROLE_%s > ROLE_%s > ROLE_%s > ROLE_%s",
+                Roles.ADMIN.getValue(),
+                Roles.DOCTOR.getValue(),
+                Roles.NURSE.getValue(),
+                Roles.PATIENT.getValue()
         );
         hierarchy.setHierarchy(hierarchyRepresentation);
 

@@ -4,7 +4,7 @@ import com.rslakra.healthcare.routinecheckup.service.UserLoginAttemptsService;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.Messages;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.WebConstants;
 import com.rslakra.healthcare.routinecheckup.utils.constants.ViewNames;
-import com.rslakra.healthcare.routinecheckup.utils.exceptions.AttemptsCountExceedException;
+import com.rslakra.healthcare.routinecheckup.exceptions.AttemptsCountExceedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;

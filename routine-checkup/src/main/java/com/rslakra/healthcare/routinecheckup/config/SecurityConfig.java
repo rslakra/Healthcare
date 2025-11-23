@@ -2,7 +2,7 @@ package com.rslakra.healthcare.routinecheckup.config;
 
 import com.rslakra.healthcare.routinecheckup.service.UserService;
 import com.rslakra.healthcare.routinecheckup.utils.constants.ViewNames;
-import com.rslakra.healthcare.routinecheckup.utils.security.RoleNames;
+import com.rslakra.healthcare.routinecheckup.utils.security.Roles;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -53,10 +53,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, ViewNames.LOGIN_URL).permitAll()
                         .requestMatchers(ViewNames.REGISTRATION_URL).permitAll()
                         .requestMatchers(ViewNames.REGISTRATION_URL + "/**").permitAll()
-                        // Admin paths
-                        .requestMatchers(ViewNames.ADMIN_BASE_PATH + "**").hasRole(RoleNames.ADMIN.getValue())
-                        // All other paths require authentication
-                        .requestMatchers("/**").hasRole(RoleNames.USER.getValue())
+                               // Admin paths
+                               .requestMatchers(ViewNames.ADMIN_BASE_PATH + "**").hasRole(Roles.ADMIN.getValue())
+                               // All other paths require authentication (PATIENT, DOCTOR, NURSE all have access)
+                               .requestMatchers("/**").hasAnyRole(
+                                       Roles.PATIENT.getValue(),
+                                       Roles.DOCTOR.getValue(),
+                                       Roles.NURSE.getValue()
+                               )
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
