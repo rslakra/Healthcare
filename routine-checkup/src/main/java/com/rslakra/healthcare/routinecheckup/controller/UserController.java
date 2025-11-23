@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.security.Principal;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 /**
  * @author Rohtash Lakra

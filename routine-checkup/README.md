@@ -43,3 +43,102 @@ These additional references should also help you:
 
 * [Gradle Build Scans – insights for your project's build](https://scans.gradle.com#gradle)
 
+---
+
+## H2 Database Access Guide
+
+### How to Access H2 Console
+
+#### 1. Start the Application
+Make sure your Spring Boot application is running.
+
+#### 2. Access H2 Console via Web Browser
+- **URL**: `http://localhost:8080/routine-checkup/h2`
+- **JDBC URL**: `jdbc:h2:file:~/Downloads/H2DB/RoutineCheckup`
+- **Username**: `sa`
+- **Password**: (leave empty)
+
+#### 3. Check Existing Tables
+
+Once connected, run this SQL query to see all tables:
+
+```sql
+SHOW TABLES;
+```
+
+Or to see table details:
+
+```sql
+SELECT TABLE_NAME 
+FROM INFORMATION_SCHEMA.TABLES 
+WHERE TABLE_SCHEMA = 'PUBLIC';
+```
+
+#### 4. Expected Tables
+
+Based on the entity classes, you should have these 6 tables:
+
+1. **users** - User accounts
+2. **roles** - User roles (ADMIN, USER)
+3. **doctors** - Doctor information
+4. **patients** - Patient information
+5. **services_schedule** - Service scheduling
+6. **user_files** - User file storage
+
+#### 5. Check Table Structure
+
+To see the structure of a specific table:
+
+```sql
+DESCRIBE users;
+```
+
+Or:
+
+```sql
+SELECT * FROM INFORMATION_SCHEMA.COLUMNS 
+WHERE TABLE_NAME = 'users';
+```
+
+#### 6. Check if Tables are Empty
+
+```sql
+SELECT 
+    'users' as table_name, COUNT(*) as row_count FROM users
+UNION ALL
+SELECT 'roles', COUNT(*) FROM roles
+UNION ALL
+SELECT 'doctors', COUNT(*) FROM doctors
+UNION ALL
+SELECT 'patients', COUNT(*) FROM patients
+UNION ALL
+SELECT 'services_schedule', COUNT(*) FROM services_schedule
+UNION ALL
+SELECT 'user_files', COUNT(*) FROM user_files;
+```
+
+#### 7. Database File Location
+
+The database file is stored at:
+- **Path**: `~/Downloads/H2DB/RoutineCheckup.mv.db`
+- **Full path on Mac/Linux**: `/Users/rslakra/Downloads/H2DB/RoutineCheckup.mv.db`
+
+#### 8. Important Notes
+
+- The current configuration uses `spring.jpa.hibernate.ddl-auto = create-drop`, which means:
+  - Tables are **created** when the application starts
+  - Tables are **dropped** when the application stops
+  - Data is **lost** when the application shuts down
+
+- To persist data, change to:
+  ```properties
+  spring.jpa.hibernate.ddl-auto = update
+  ```
+
+#### 9. Troubleshooting
+
+If you can't access the H2 console:
+1. Make sure the application is running
+2. Check that `spring.h2.console.enabled = true` in application.properties
+3. Verify the URL includes the context path: `/routine-checkup/h2`
+4. Check browser console for any errors
