@@ -2,45 +2,134 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Registration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration - Routine Checkup</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
     <script th:if="${is_extra_registration}"
             src="https://www.google.com/recaptcha/api.js"
             async defer>
     </script>
+    <style>
+        .specialization-field {
+            display: none;
+        }
+        .specialization-field.show {
+            display: block;
+        }
+    </style>
 </head>
 <body>
-<form th:action="@{/registration}" th:object="${registration_dto}"
-      method="POST">
-    <label for="login">Enter your login</label>
-    <input type="text" th:field="*{login}" id="login" placeholder="login"
-           required>
-    <br>
+    <div class="auth-container">
+        <div class="auth-card fade-in">
+            <h1>🏥 Create Account</h1>
+            <p class="subtitle">Join Routine Checkup today</p>
 
-    <label for="pas">Enter your password</label>
-    <input type="password" th:field="*{password}" id="pas"
-           placeholder="password" required>
-    <br>
+            <form th:action="@{/registration}" th:object="${registration_dto}" method="POST" id="registrationForm">
+                <!-- Role Selection - Radio Buttons in Single Row -->
+                <div class="form-group">
+                    <label style="margin-bottom: 1rem; display: block;">I am registering as:</label>
+                    <div style="display: flex; gap: 2rem; align-items: center; flex-wrap: wrap;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="radio" th:field="*{role}" value="PATIENT" checked onchange="handleRoleChange()" style="width: auto; margin: 0;">
+                            <span>👤 Patient</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="radio" th:field="*{role}" value="DOCTOR" onchange="handleRoleChange()" style="width: auto; margin: 0;">
+                            <span>👨‍⚕️ Doctor</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="radio" th:field="*{role}" value="NURSE" onchange="handleRoleChange()" style="width: auto; margin: 0;">
+                            <span>👩‍⚕️ Nurse</span>
+                        </label>
+                    </div>
+                </div>
 
-    <label for="pas">Enter your email</label>
-    <input type="email" th:field="*{mail}" id="mail" placeholder="mail"
-           required>
-    <br>
+                <!-- Specialization Field (shown for DOCTOR and NURSE) -->
+                <div class="form-group specialization-field" id="specializationField">
+                    <label for="specialization" id="specializationLabel">Specialization</label>
+                    <input type="text" 
+                           th:field="*{specialization}" 
+                           id="specialization" 
+                           placeholder="e.g., Cardiology, Pediatrics, Emergency Care, etc."
+                           autocomplete="off">
+                    <small style="color: var(--text-light); display: block; margin-top: 0.5rem;">
+                        Enter your medical specialization or area of expertise
+                    </small>
+                </div>
 
-    <label for="first_name">Enter your first name</label>
-    <input type="text" th:field="*{firstName}" id="first_name"
-           placeholder="first name" required>
-    <br>
+                <div class="form-group">
+                    <label for="login">Username</label>
+                    <input type="text" th:field="*{login}" id="login" placeholder="Choose a username" required>
+                </div>
 
-    <label for="last_name">Enter your last name</label>
-    <input type="text" th:field="*{lastName}" id="last_name"
-           placeholder="last name" required>
-    <br>
+                <div class="form-group">
+                    <label for="pas">Password</label>
+                    <input type="password" th:field="*{password}" id="pas" placeholder="Create a password" required>
+                </div>
 
-    <div th:if="${is_extra_registration}" class="g-recaptcha"
-         th:attr="data-sitekey=${site_key}">
+                <div class="form-group">
+                    <label for="mail">Email Address</label>
+                    <input type="email" th:field="*{mail}" id="mail" placeholder="your.email@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" th:field="*{firstName}" id="first_name" placeholder="Enter your first name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" th:field="*{lastName}" id="last_name" placeholder="Enter your last name" required>
+                </div>
+
+                <div th:if="${is_extra_registration}" class="form-group">
+                    <div class="g-recaptcha" th:attr="data-sitekey=${site_key}"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Create Account</button>
+            </form>
+            
+            <div class="auth-links">
+                <p>Already have an account? <a th:href="@{/login}">Sign in here</a></p>
+            </div>
+        </div>
     </div>
 
-    <button id="send" type="submit">Register</button>
-</form>
+    <script>
+        function handleRoleChange() {
+            const roleInputs = document.querySelectorAll('input[name="role"]');
+            const specializationField = document.getElementById('specializationField');
+            const specializationInput = document.getElementById('specialization');
+            const specializationLabel = document.getElementById('specializationLabel');
+            
+            let selectedRole = null;
+            roleInputs.forEach(input => {
+                if (input.checked) {
+                    selectedRole = input.value;
+                }
+            });
+
+            if (selectedRole === 'DOCTOR' || selectedRole === 'NURSE') {
+                specializationField.classList.add('show');
+                specializationInput.setAttribute('required', 'required');
+                if (selectedRole === 'DOCTOR') {
+                    specializationLabel.textContent = 'Medical Specialization *';
+                    specializationInput.placeholder = 'e.g., Cardiology, Pediatrics, Neurology, etc.';
+                } else {
+                    specializationLabel.textContent = 'Nursing Specialization *';
+                    specializationInput.placeholder = 'e.g., Emergency Care, ICU, Pediatrics, etc.';
+                }
+            } else {
+                specializationField.classList.remove('show');
+                specializationInput.removeAttribute('required');
+                specializationInput.value = '';
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            handleRoleChange();
+        });
+    </script>
 </body>
 </html>

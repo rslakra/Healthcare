@@ -7,8 +7,8 @@ import com.rslakra.healthcare.routinecheckup.repository.ServiceScheduleRepositor
 import com.rslakra.healthcare.routinecheckup.service.ServiceScheduleService;
 import com.rslakra.healthcare.routinecheckup.service.UserService;
 import com.rslakra.healthcare.routinecheckup.utils.components.DtoUtils;
-import com.rslakra.healthcare.routinecheckup.utils.exceptions.IncorrectServiceException;
-import com.rslakra.healthcare.routinecheckup.utils.exceptions.ServiceNotFoundException;
+import com.rslakra.healthcare.routinecheckup.exceptions.IncorrectServiceException;
+import com.rslakra.healthcare.routinecheckup.exceptions.ServiceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -6,22 +6,24 @@ import com.rslakra.healthcare.routinecheckup.dto.response.*;
 import com.rslakra.healthcare.routinecheckup.entity.RoleEntity;
 import com.rslakra.healthcare.routinecheckup.entity.UserEntity;
 import com.rslakra.healthcare.routinecheckup.repository.UserRepository;
-import com.rslakra.healthcare.routinecheckup.service.ReCaptchaApproveComponent;
+import com.rslakra.healthcare.routinecheckup.service.CaptchaService;
 import com.rslakra.healthcare.routinecheckup.service.RoleService;
-import com.rslakra.healthcare.routinecheckup.service.UserRegistrationAttemptsService;
+import com.rslakra.healthcare.routinecheckup.service.AuthAttemptsService;
 import com.rslakra.healthcare.routinecheckup.service.UserService;
-import com.rslakra.healthcare.routinecheckup.service.mail.RegistrationNotificationService;
-import com.rslakra.healthcare.routinecheckup.service.security.TokenComponent;
+import com.rslakra.healthcare.routinecheckup.service.mail.EmailService;
+import com.rslakra.healthcare.routinecheckup.service.mail.EmailType;
+import com.rslakra.healthcare.routinecheckup.service.security.TokenService;
 import com.rslakra.healthcare.routinecheckup.utils.components.DtoUtils;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.FileStorageConstants;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.Messages;
-import com.rslakra.healthcare.routinecheckup.utils.exceptions.IncorrectUrlException;
-import com.rslakra.healthcare.routinecheckup.utils.exceptions.UserMismatchException;
-import com.rslakra.healthcare.routinecheckup.utils.exceptions.UserNotFoundException;
-import com.rslakra.healthcare.routinecheckup.utils.exceptions.UserValidationException;
-import com.rslakra.healthcare.routinecheckup.utils.security.RoleNames;
+import com.rslakra.healthcare.routinecheckup.exceptions.IncorrectUrlException;
+import com.rslakra.healthcare.routinecheckup.exceptions.UserMismatchException;
+import com.rslakra.healthcare.routinecheckup.exceptions.UserNotFoundException;
+import com.rslakra.healthcare.routinecheckup.exceptions.UserValidationException;
+import com.rslakra.healthcare.routinecheckup.utils.security.Roles;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.owasp.encoder.Encode;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -44,28 +46,40 @@ import java.util.stream.StreamSupport;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final Messages messages;
     private final DtoUtils dtoUtils;
     private final PasswordEncoder passwordEncoder;
-    private final ReCaptchaApproveComponent reCaptchaApproveComponent;
+    private final CaptchaService captchaService;
     private final RoleService roleService;
-    private final UserRegistrationAttemptsService userRegistrationAttemptsService;
-    private final TokenComponent tokenComponent;
+    private final AuthAttemptsService authAttemptsService;
+    private final TokenService tokenService;
     private final FileStorageConstants fileStorageConstants;
-    private final RegistrationNotificationService registrationNotificationService;
+    private final EmailService emailService;
 
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
+        long startTime = System.currentTimeMillis();
         Optional<UserEntity> userOptional = userRepository.findByLogin(username);
-        UserEntity user = userOptional.orElseThrow(() -> new UsernameNotFoundException(username));
+        long dbTime = System.currentTimeMillis() - startTime;
+        
+        if (userOptional.isEmpty()) {
+            log.warn("Login attempt failed: User '{}' not found (DB query took {} ms)", username, dbTime);
+            throw new UsernameNotFoundException("User not found: " + username);
+        }
+        
+        UserEntity user = userOptional.get();
         if (user.getIsTemporary()) {
-            throw new UsernameNotFoundException(username);
+            log.warn("Login attempt failed: User '{}' has not completed registration (temporary account, DB query took {} ms)", username, dbTime);
+            throw new UsernameNotFoundException("Temporary account: " + username);
         }
 
+        long totalTime = System.currentTimeMillis() - startTime;
+        log.debug("User '{}' loaded successfully for authentication (total time: {} ms, DB: {} ms)", username, totalTime, dbTime);
         UserDetails result = dtoUtils.getUserDetails(user);
         return result;
     }
@@ -96,21 +110,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponseDto registerNewUser(@NonNull UserRequestDto user, String captchaResponse, RoleNames roleName, String userIp) {
+    public UserResponseDto registerNewUser(@NonNull UserRequestDto user, String captchaResponse, Roles roleName, String userIp) {
         UserRequestDto sanitizedUser = dtoUtils.sanitizeUser(user);
-        boolean extraLastRegistration = userRegistrationAttemptsService.isExtraLastRegistration(userIp);
+        boolean extraLastRegistration = authAttemptsService.isExtraLastRegistration(userIp);
         if (extraLastRegistration) {
-            reCaptchaApproveComponent.approve(captchaResponse);
+            captchaService.approve(captchaResponse);
         }
 
         UserEntity userEntity = dtoUtils.convertUser(sanitizedUser);
         String encodedPassword = passwordEncoder.encode(userEntity.getPassword());
         userEntity.setPassword(encodedPassword);
-        Optional<RoleEntity> roleOpt = roleService.findByName(roleName.getValue());
-        RoleEntity role = roleOpt.orElseThrow(() -> {
-            String message = String.format("A role named \"%s\" does not exist", roleName.getValue());
-            return new RuntimeException(message);
-        });
+        // Ensure role exists (create if not found - fallback in case DataInitializer hasn't run)
+        RoleEntity role = roleService.createIfNotExists(roleName.getValue());
         userEntity.setRole(role);
         userEntity.setIsTemporary(true);
 
@@ -120,7 +131,18 @@ public class UserServiceImpl implements UserService {
         }
 
         UserEntity saved = userRepository.save(userEntity);
-        registrationNotificationService.sendRegistrationEmail(saved);
+        
+        // Send registration email - if it fails, log error but don't fail registration
+        try {
+            emailService.sendEmail(EmailType.REGISTRATION, saved, null);
+        } catch (Exception e) {
+            // Email sending is non-critical - registration should succeed even if email fails
+            // Error is already logged in EmailServiceImpl
+            log.warn("User '{}' registered successfully, but registration email could not be sent. " +
+                    "User can still complete registration using the token from the registration URL.",
+                    saved.getLogin());
+        }
+        
         UserResponseDto result = dtoUtils.convertUser(saved);
 
         return result;
@@ -187,7 +209,7 @@ public class UserServiceImpl implements UserService {
             return;
         }
 
-        String loginFromToken = tokenComponent.getLoginFromRegistrationToken(registrationToken);
+        String loginFromToken = tokenService.getLoginFromRegistrationToken(registrationToken);
         UserEntity user = findByLogin(loginFromToken);
 
         if (user.getIsTemporary()) {

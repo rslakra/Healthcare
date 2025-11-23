@@ -2,38 +2,74 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Monthly report</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Reports - Routine Checkup</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
     <script type="module" src="js/util.js"></script>
-    <script type="module" src="js/report_actions.js"></script>
+    <script type="module" src="js/reportActions.js"></script>
 </head>
 <body>
-<meta id="_csrf_token" th:attr="val = ${csrf_token.getToken()}">
-<meta id="_csrf_header" th:attr="val = ${csrf_token.getHeaderName()}">
+    <div th:replace="~{fragments/navigation :: nav}"></div>
+    
+    <div class="container fade-in">
+        <div class="page-header">
+            <h1>📊 Monthly Reports</h1>
+            <p>Manage your health reports and documents</p>
+        </div>
 
-<form th:action="@{/monthly_report}" method="POST"
-      enctype="multipart/form-data"
->
-    <label for="file_inp">Upload new report</label>
-    <input id="file_inp" type="file" name="file">
-    <input type="submit" value="send!">
-</form>
+        <div class="card">
+            <div class="card-header">
+                <h2>Upload New Report</h2>
+            </div>
+            <form th:action="@{/monthly_report}" method="POST" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="file_inp">Select Report File</label>
+                    <input id="file_inp" type="file" name="file" accept=".pdf,.doc,.docx,.xls,.xlsx" required>
+                    <small style="color: var(--text-light); display: block; margin-top: 0.5rem;">
+                        Supported formats: PDF, DOC, DOCX, XLS, XLSX
+                    </small>
+                </div>
+                <button type="submit" class="btn btn-primary">📤 Upload Report</button>
+            </form>
+        </div>
 
-<table border="1" id="reports_table">
-    <tr>
-        <th>Report name</th>
-    </tr>
-    <tr th:each="report_name : ${reports_names}">
-        <td th:text="${report_name}"></td>
-        <td><a th:href="@{/rename_report/{nm}(nm = ${report_name})}">
-            Change report name
-        </a></td>
-        <td><input
-                th:attr="rep_name=${report_name}"
-                type="button"
-                onclick="deleteReport(this.getAttribute('rep_name'))"
-                value="delete"
-        /></td>
-    </tr>
-</table>
+        <div class="card">
+            <div class="card-header">
+                <h2>Your Reports</h2>
+            </div>
+            <div class="table-container">
+                <table id="reports_table">
+                    <thead>
+                        <tr>
+                            <th>Report Name</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="report_name : ${reports_names}">
+                            <td><strong th:text="${report_name}"></strong></td>
+                            <td>
+                                <div class="d-flex gap-2">
+                                    <a th:href="@{/rename_report/{nm}(nm = ${report_name})}" 
+                                       class="btn btn-sm btn-outline">✏️ Rename</a>
+                                    <button th:attr="rep_name=${report_name}"
+                                            onclick="deleteReport(this.getAttribute('rep_name'))"
+                                            class="btn btn-sm btn-danger">🗑️ Delete</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${reports_names.isEmpty()}">
+                            <td colspan="2" style="text-align: center; color: var(--text-light); padding: 2rem;">
+                                No reports uploaded yet. Upload your first report above.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <meta id="_csrf_token" th:attr="val = ${csrf_token.getToken()}">
+    <meta id="_csrf_header" th:attr="val = ${csrf_token.getHeaderName()}">
 </body>
 </html>

@@ -7,7 +7,7 @@ import com.rslakra.healthcare.routinecheckup.dto.response.UserDoctorsAndPatients
 import com.rslakra.healthcare.routinecheckup.dto.response.UserResponseDto;
 import com.rslakra.healthcare.routinecheckup.dto.response.UsersDoctorsAndPatients;
 import com.rslakra.healthcare.routinecheckup.entity.UserEntity;
-import com.rslakra.healthcare.routinecheckup.utils.security.RoleNames;
+import com.rslakra.healthcare.routinecheckup.utils.security.Roles;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
@@ -25,7 +25,7 @@ public interface UserService extends UserDetailsService {
     UserResponseDto registerNewUser(
         UserRequestDto user,
         String captchaResponse,
-        RoleNames roleName,
+        Roles roleName,
         String userIp
     );
 

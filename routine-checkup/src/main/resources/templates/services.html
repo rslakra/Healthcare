@@ -1,22 +1,47 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <script src="js/servicesActions.js"></script>
     <meta charset="UTF-8">
-    <title>Services</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Service - Routine Checkup</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script src="js/servicesActions.js"></script>
 </head>
 <body>
-<meta id="type_meta" th:attr="_type=${service_data.getServiceType()}">
+    <div th:replace="~{fragments/navigation :: nav}"></div>
+    
+    <div class="container fade-in">
+        <div class="page-header">
+            <h1 th:text="${service_data.getServiceType() == 'online' ? '💻 Online Consultation' : '🏠 Home Visit'}">Book Service</h1>
+            <p>Complete your service booking details</p>
+        </div>
 
-<h3>Cost:</h3>
-<div id="cost"></div>
-<form th:action="@{/services}" th:object="${service_data}" method="POST">
-    <input type="hidden" th:field="*{serviceType}">
+        <div class="card">
+            <div class="card-header">
+                <h2>Service Details</h2>
+            </div>
+            
+            <div class="alert alert-info">
+                <h3>Service Cost:</h3>
+                <div id="cost" style="font-size: 1.5rem; font-weight: 600; color: var(--primary-color); margin-top: 0.5rem;"></div>
+            </div>
 
-    <label for="addit_data" id="data_label"></label>
-    <input type="text" th:field="*{additionalData}" id="addit_data"><br>
+            <form th:action="@{/services}" th:object="${service_data}" method="POST">
+                <input type="hidden" th:field="*{serviceType}">
 
-    <button type="submit">Submit</button>
-</form>
+                <div class="form-group">
+                    <label for="addit_data" id="data_label"></label>
+                    <input type="text" th:field="*{additionalData}" id="addit_data" placeholder="Enter additional information">
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Confirm Booking</button>
+                    <a th:href="@{/doctors_and_patients_list}" class="btn btn-outline">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <meta id="type_meta" th:attr="_type=${service_data.getServiceType()}">
 </body>
 </html>

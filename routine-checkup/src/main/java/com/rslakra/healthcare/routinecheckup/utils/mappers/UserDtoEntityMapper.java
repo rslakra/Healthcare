@@ -21,7 +21,8 @@ public interface UserDtoEntityMapper {
             @Mapping(target = "password", source = "dto.password"),
             @Mapping(target = "firstName", source = "dto.firstName"),
             @Mapping(target = "lastName", source = "dto.lastName"),
-            @Mapping(target = "mail", source = "dto.mail")
+            @Mapping(target = "mail", source = "dto.mail"),
+            @Mapping(target = "role", ignore = true) // Role is handled separately in service layer
     })
     UserEntity userRequestDtoToUserEntity(UserRequestDto dto);
 

@@ -2,30 +2,38 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Routine Checkup</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
-<div>
-    <div th:if="${loginMessage} != null">
-        <h3>[[${loginMessage}]]</h3>
+    <div class="auth-container">
+        <div class="auth-card fade-in">
+            <h1>🏥 Routine Checkup</h1>
+            <p class="subtitle">Sign in to your account</p>
+            
+            <div th:if="${loginMessage}" class="alert" th:classappend="${error != null ? 'alert-error' : 'alert-success'}">
+                [[${loginMessage}]]
+            </div>
+
+            <form th:action="@{/login}" th:object="${loginDto}" method="POST">
+                <div class="form-group">
+                    <label for="login">Username</label>
+                    <input type="text" th:field="*{username}" id="login" placeholder="Enter your username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="pas">Password</label>
+                    <input type="password" th:field="*{password}" id="pas" placeholder="Enter your password" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Sign In</button>
+            </form>
+            
+            <div class="auth-links">
+                <p>Don't have an account? <a th:href="@{/registration}">Register here</a></p>
+            </div>
+        </div>
     </div>
-
-    <form th:action="@{/login}" th:object="${loginDto}" method="POST">
-        <label for="login">Enter your login</label>
-        <input type="text" th:field="*{username}" id="login"
-               placeholder="login" required
-        >
-        <br>
-
-        <label for="pas">Enter your password</label>
-        <input type="password" th:field="*{password}" id="pas"
-               placeholder="password" required
-        >
-        <br>
-
-        <button id="send" type="submit">Log in</button>
-    </form>
-    <a th:href="@{/registration}">Register a new account</a>
-</div>
 </body>
 </html>

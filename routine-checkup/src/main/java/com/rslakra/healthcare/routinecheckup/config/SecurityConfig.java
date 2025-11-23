@@ -2,7 +2,7 @@ package com.rslakra.healthcare.routinecheckup.config;
 
 import com.rslakra.healthcare.routinecheckup.service.UserService;
 import com.rslakra.healthcare.routinecheckup.utils.constants.ViewNames;
-import com.rslakra.healthcare.routinecheckup.utils.security.RoleNames;
+import com.rslakra.healthcare.routinecheckup.utils.security.Roles;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,10 +36,13 @@ public class SecurityConfig {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private final org.springframework.security.web.authentication.AuthenticationFailureHandler customAuthenticationFailureHandler;
     private final Filter jwtAuthenticationFilter;
     private final Filter loginAttemptCountFilter;
+    private final Filter requestLoggingFilter;
     private final LogoutSuccessHandler customLogoutSuccessHandler;
     private final CsrfTokenRepository customCsrfTokenRepository;
+    private final Filter loginDebugFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -53,15 +56,25 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, ViewNames.LOGIN_URL).permitAll()
                         .requestMatchers(ViewNames.REGISTRATION_URL).permitAll()
                         .requestMatchers(ViewNames.REGISTRATION_URL + "/**").permitAll()
-                        // Admin paths
-                        .requestMatchers(ViewNames.ADMIN_BASE_PATH + "**").hasRole(RoleNames.ADMIN.getValue())
-                        // All other paths require authentication
-                        .requestMatchers("/**").hasRole(RoleNames.USER.getValue())
+                        // Permit admin utility endpoints (for development/testing - disable in production)
+                        .requestMatchers("/admin/**").permitAll()
+                               // Admin paths
+                               .requestMatchers(ViewNames.ADMIN_BASE_PATH + "**").hasRole(Roles.ADMIN.getValue())
+                               // All other paths require authentication (PATIENT, DOCTOR, NURSE all have access)
+                               .requestMatchers("/**").hasAnyRole(
+                                       Roles.PATIENT.getValue(),
+                                       Roles.DOCTOR.getValue(),
+                                       Roles.NURSE.getValue()
+                               )
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage(ViewNames.LOGIN_URL)
+                        .usernameParameter("username")  // Explicitly set username parameter name
+                        .passwordParameter("password")   // Explicitly set password parameter name
+                        .loginProcessingUrl(ViewNames.LOGIN_URL)  // Explicitly set login processing URL
                         .successHandler(customAuthenticationSuccessHandler)
+                        .failureHandler(customAuthenticationFailureHandler)  // Use custom failure handler
                         .permitAll()
                 )
                 .logout(logout -> logout
@@ -89,7 +102,9 @@ public class SecurityConfig {
                         .sessionAuthenticationStrategy(new NullAuthenticatedSessionStrategy())
                 )
                 .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(loginAttemptCountFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(loginAttemptCountFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(requestLoggingFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(loginDebugFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

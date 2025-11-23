@@ -1,23 +1,41 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <script type="module" src="js/doctorActions.js"></script>
-    <script type="module" src="js/util.js"></script>
     <meta charset="UTF-8">
-    <title>Update doctor</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Doctor - Routine Checkup</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script type="module" src="js/doctorActions.js"></script>
+    <script type="module" src="js/utils.js"></script>
 </head>
 <body>
-<meta id="doc_id" th:attr="_doc_id = ${doctor.getId()}">
-<meta id="_csrf_token" th:attr="val = ${csrf_token.getToken()}">
-<meta id="_csrf_header" th:attr="val = ${csrf_token.getHeaderName()}">
+    <div th:replace="~{fragments/navigation :: nav}"></div>
+    
+    <div class="container fade-in">
+        <div class="page-header">
+            <h1>👨‍⚕️ Update Doctor Information</h1>
+            <p>Modify doctor specialty and details</p>
+        </div>
 
-<label for="spec_inp">Enter Doctor Specialty</label>
-<input id="spec_inp" type="text" th:value="${doctor.getSpeciality()}"/><br>
+        <div class="form-container">
+            <form>
+                <div class="form-group">
+                    <label for="spec_inp">Doctor Specialty</label>
+                    <input id="spec_inp" type="text" th:value="${doctor.getSpeciality()}" placeholder="e.g., Cardiology, Pediatrics, etc."/>
+                </div>
 
-<input id="upd_doctor" type="button" value="Send!"/><br>
-<input id="upd_doctor_cancel" type="button" value="Back"/><br>
+                <div class="d-flex gap-2">
+                    <input id="upd_doctor" type="button" value="💾 Save Changes" class="btn btn-primary"/>
+                    <input id="upd_doctor_cancel" type="button" value="↩️ Cancel" class="btn btn-outline"/>
+                </div>
+            </form>
 
-<div id="payment_div"></div>
-<br>
+            <div id="payment_div" style="margin-top: 2rem;"></div>
+        </div>
+    </div>
+    
+    <meta id="doc_id" th:attr="_doc_id = ${doctor.getId()}">
+    <meta id="_csrf_token" th:attr="val = ${csrf_token.getToken()}">
+    <meta id="_csrf_header" th:attr="val = ${csrf_token.getHeaderName()}">
 </body>
 </html>

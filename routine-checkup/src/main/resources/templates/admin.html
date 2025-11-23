@@ -1,68 +1,116 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <script src="js/app.js"></script>
     <meta charset="UTF-8">
-    <title>Admin page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Routine Checkup</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <script src="js/app.js"></script>
 </head>
 <body>
-<form th:action="@{/logout}" method="POST">
-    <button id="send" type="submit">Log out</button>
-</form>
-<h1>Hello, ADMIN!</h1>
-<h2>Manage users profiles:</h2>
-<div
-        th:each="doc_and_pat : ${users_doctors_and_patients.getUserDoctorsAndPatients()}"
->
-    <h2 th:text="${doc_and_pat.getUser().getLastName()}"></h2>
-    <h3>Patients:</h3>
-    <table border="1" id="patient_table">
-        <tr>
-            <th>Disease</th>
-            <th>Doctor name</th>
-            <th>Date of onset of the disease</th>
-            <th>Date of recovery</th>
-        </tr>
-        <tr th:each="pat : ${doc_and_pat.getPatients()}">
-            <td
-                    th:text="${pat.getDisease()}"
-                    th:attr="id='pat_dis' + ${pat.getId()}"
-            ></td>
-            <td th:text="${pat.getDoctor().getLastName()}"
-                th:attr="id='pat_doc' + ${pat.getId()},
-                doc_id=${pat.getDoctor().getId()}">
-            </td>
-            <td
-                    th:text="${pat.getDiseaseOnsetTime()}"
-                    th:attr="id='pat_ons' + ${pat.getId()}">
-            </td>
-            <th
-                    th:text="${pat.getEndTimeOfIllness() ?: 'Not cured yet'}"
-                    th:attr="id='pat_end' + ${pat.getId()}">
-            </th>
-            <th><input
-                    th:attr="id='pat' + ${pat.getId()}"
-                    type="button"
-                    onclick="updPatient(this.getAttribute('id'))"
-                    value="update"
-            /></th>
-        </tr>
-    </table>
-    <h3>Doctors:</h3>
-    <table border="1">
-        <tr>
-            <th>Speciality</th>
-        </tr>
-        <tr th:each="doc : ${doc_and_pat.getDoctors()}">
-            <td th:text="${doc.getSpeciality()}"></td>
-            <th><input
-                    th:attr="id='doc' + ${doc.getId()}"
-                    type="button"
-                    onclick="updDoctor(this.getAttribute('id'))"
-                    value="update"
-            /></th>
-        </tr>
-    </table>
-</div>
+    <div th:replace="~{fragments/navigation :: nav}"></div>
+    
+    <div class="container fade-in">
+        <div class="page-header">
+            <h1>👨‍💼 Admin Panel</h1>
+            <p>Manage all users, doctors, and patients</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3 th:text="${users_doctors_and_patients.getUserDoctorsAndPatients().size()}">0</h3>
+                <p>Total Users</p>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, var(--secondary-color), var(--secondary-dark));">
+                <h3 th:text="${users_doctors_and_patients.getUserDoctorsAndPatients().stream().flatMap(u -> u.getPatients().stream()).count()}">0</h3>
+                <p>Total Patients</p>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card" style="margin-bottom: 2rem;">
+            <div class="card-header">
+                <h2>Admin Actions</h2>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <a th:href="@{/admin/roles}" class="btn btn-outline">🔐 Manage Roles</a>
+            </div>
+        </div>
+
+        <div th:each="doc_and_pat : ${users_doctors_and_patients.getUserDoctorsAndPatients()}" class="card">
+            <div class="card-header">
+                <h2 th:text="'User: ' + ${doc_and_pat.getUser().getFirstName()} + ' ' + ${doc_and_pat.getUser().getLastName()}"></h2>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <!-- Patients Section -->
+                <div>
+                    <h3>Patients</h3>
+                    <div class="table-container">
+                        <table id="patient_table">
+                            <thead>
+                                <tr>
+                                    <th>Disease</th>
+                                    <th>Doctor</th>
+                                    <th>Onset</th>
+                                    <th>Recovery</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="pat : ${doc_and_pat.getPatients()}">
+                                    <td th:text="${pat.getDisease()}" th:attr="id='pat_dis' + ${pat.getId()}"></td>
+                                    <td th:text="${pat.getDoctor().getLastName()}"
+                                        th:attr="id='pat_doc' + ${pat.getId()}, doc_id=${pat.getDoctor().getId()}"></td>
+                                    <td th:text="${pat.getDiseaseOnsetTime()}" th:attr="id='pat_ons' + ${pat.getId()}"></td>
+                                    <td th:text="${pat.getEndTimeOfIllness() ?: 'Ongoing'}" th:attr="id='pat_end' + ${pat.getId()}"></td>
+                                    <td>
+                                        <button th:attr="id='pat' + ${pat.getId()}"
+                                                onclick="updPatient(this.getAttribute('id'))"
+                                                class="btn btn-sm btn-outline">Update</button>
+                                    </td>
+                                </tr>
+                                <tr th:if="${doc_and_pat.getPatients().isEmpty()}">
+                                    <td colspan="5" style="text-align: center; color: var(--text-light); padding: 1rem;">
+                                        No patients
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Doctors Section -->
+                <div>
+                    <h3>Doctors</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Specialty</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="doc : ${doc_and_pat.getDoctors()}">
+                                    <td th:text="${doc.getSpeciality()}"></td>
+                                    <td>
+                                        <button th:attr="id='doc' + ${doc.getId()}"
+                                                onclick="updDoctor(this.getAttribute('id'))"
+                                                class="btn btn-sm btn-outline">Update</button>
+                                    </td>
+                                </tr>
+                                <tr th:if="${doc_and_pat.getDoctors().isEmpty()}">
+                                    <td colspan="2" style="text-align: center; color: var(--text-light); padding: 1rem;">
+                                        No doctors
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

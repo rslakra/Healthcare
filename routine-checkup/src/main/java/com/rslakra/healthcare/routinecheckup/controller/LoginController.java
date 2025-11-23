@@ -24,11 +24,13 @@ public class LoginController {
     public String login(
         @RequestParam(value = "error", required = false) String error,
         @RequestParam(value = "logout", required = false) String logout,
+        @RequestParam(value = "message", required = false) String message,
         Model model
     ) {
         String loginMessage = null;
         if (error != null) {
-            loginMessage = "Incorrect credentials!";
+            // Use custom message if provided, otherwise default
+            loginMessage = message != null ? message : "Incorrect credentials!";
         }
         if (logout != null) {
             loginMessage = "You have successfully logged out";

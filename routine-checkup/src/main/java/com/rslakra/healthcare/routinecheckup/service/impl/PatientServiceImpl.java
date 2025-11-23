@@ -9,9 +9,9 @@ import com.rslakra.healthcare.routinecheckup.service.PatientService;
 import com.rslakra.healthcare.routinecheckup.service.UserService;
 import com.rslakra.healthcare.routinecheckup.utils.components.DtoUtils;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.Messages;
-import com.rslakra.healthcare.routinecheckup.utils.exceptions.UserMismatchException;
-import com.rslakra.healthcare.routinecheckup.utils.exceptions.UserNotFoundException;
-import com.rslakra.healthcare.routinecheckup.utils.security.RoleNames;
+import com.rslakra.healthcare.routinecheckup.exceptions.UserMismatchException;
+import com.rslakra.healthcare.routinecheckup.exceptions.UserNotFoundException;
+import com.rslakra.healthcare.routinecheckup.utils.security.Roles;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -96,7 +96,7 @@ public class PatientServiceImpl implements PatientService {
 
     private void validatePatientBelongsToUser(PatientEntity patientEntity, String login) {
         UserEntity user = userService.getUserEntityByLogin(login);
-        if (RoleNames.ADMIN.getValue().equals(user.getRole().getRoleName())) {
+        if (Roles.ADMIN.getValue().equals(user.getRole().getRoleName())) {
             return;
         }
 

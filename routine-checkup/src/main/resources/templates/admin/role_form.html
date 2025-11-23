@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${role.id != null ? 'Edit Role' : 'Create Role'}">Role Form - Admin Panel</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/navigation :: nav}"></div>
+    
+    <div class="container fade-in">
+        <div class="page-header">
+            <h1 th:text="${role.id != null ? '✏️ Edit Role' : '➕ Create New Role'}">Role Form</h1>
+            <p th:text="${role.id != null ? 'Update role information' : 'Add a new role to the system'}">Manage role</p>
+        </div>
+
+        <div th:if="${errorMessage}" class="alert alert-error">
+            [[${errorMessage}]]
+        </div>
+
+        <div class="form-container">
+            <form th:action="${role.id != null ? @{/admin/roles/{id}/edit(id=${role.id})} : @{/admin/roles/create}}" 
+                  th:object="${role}" 
+                  method="POST">
+                <input type="hidden" th:field="*{id}" th:if="${role.id != null}">
+
+                <div class="form-group">
+                    <label for="role_name">Role Name</label>
+                    <input type="text" 
+                           th:field="*{roleName}" 
+                           id="role_name" 
+                           placeholder="e.g., MANAGER, RECEPTIONIST, LAB_TECH"
+                           required
+                           style="text-transform: uppercase;">
+                    <small style="color: var(--text-light); display: block; margin-top: 0.5rem;">
+                        Role names will be automatically converted to uppercase. Use underscores for multi-word roles (e.g., LAB_TECH).
+                    </small>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <span th:text="${role.id != null ? '💾 Update Role' : '➕ Create Role'}">Save</span>
+                    </button>
+                    <a th:href="@{/admin/roles}" class="btn btn-outline">↩️ Cancel</a>
+                </div>
+            </form>
+        </div>
+
+        <div style="margin-top: 2rem;">
+            <a th:href="@{/admin/roles}" class="btn btn-outline">← Back to Role Management</a>
+        </div>
+    </div>
+</body>
+</html>
+

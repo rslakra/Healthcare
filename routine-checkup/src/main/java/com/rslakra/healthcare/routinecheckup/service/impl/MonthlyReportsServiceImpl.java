@@ -5,7 +5,7 @@ import com.rslakra.healthcare.routinecheckup.entity.UserFileEntity;
 import com.rslakra.healthcare.routinecheckup.service.FileComponent;
 import com.rslakra.healthcare.routinecheckup.service.MonthlyReportsService;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.Messages;
-import com.rslakra.healthcare.routinecheckup.utils.exceptions.IncorrectFIleException;
+import com.rslakra.healthcare.routinecheckup.exceptions.IncorrectFIleException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

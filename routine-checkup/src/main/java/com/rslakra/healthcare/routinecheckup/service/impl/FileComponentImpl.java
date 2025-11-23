@@ -7,7 +7,7 @@ import com.rslakra.healthcare.routinecheckup.service.FileComponent;
 import com.rslakra.healthcare.routinecheckup.service.UserService;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.FileStorageConstants;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.Messages;
-import com.rslakra.healthcare.routinecheckup.utils.exceptions.IncorrectFIleException;
+import com.rslakra.healthcare.routinecheckup.exceptions.IncorrectFIleException;
 import lombok.RequiredArgsConstructor;
 import org.owasp.encoder.Encode;
 import org.slf4j.Logger;
