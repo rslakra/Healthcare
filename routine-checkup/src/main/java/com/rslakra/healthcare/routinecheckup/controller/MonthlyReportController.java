@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.security.Principal;
 import java.util.List;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 /**
  * @author Rohtash Lakra

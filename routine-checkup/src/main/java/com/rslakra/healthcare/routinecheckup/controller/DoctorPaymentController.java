@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 
-import javax.validation.constraints.Pattern;
+import jakarta.validation.constraints.Pattern;
 
 /**
  * @author Rohtash Lakra
