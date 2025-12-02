@@ -10,6 +10,7 @@ import com.rslakra.healthcare.routinecheckup.utils.constants.ViewNames;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;
+import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
@@ -56,7 +57,7 @@ public class EmailServiceImpl implements EmailService {
         } catch (Exception e) {
             log.error("Unexpected error while sending email to '{}': {}", to, e.getMessage(), e);
             // Wrap in MailException for consistent handling
-            throw new org.springframework.mail.MailSendException("Email sending failed: " + e.getMessage(), e);
+            throw new MailSendException("Email sending failed: " + e.getMessage(), e);
         }
     }
 
