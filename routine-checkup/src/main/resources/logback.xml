@@ -18,6 +18,10 @@
     <logger name="org.springframework.transaction" level="WARN"/>
     <!-- to debug some marshaling issues, this should be TRACE -->
     <logger name="org.springframework.web.servlet.mvc" level="WARN"/>
+    
+    <!-- Request logging filters -->
+    <logger name="com.rslakra.healthcare.routinecheckup.service.filter.RequestLoggingFilter" level="DEBUG"/>
+    <logger name="com.rslakra.healthcare.routinecheckup.service.filter.LoginDebugFilter" level="DEBUG"/>
 
     <!-- hibernate -->
     <logger name="org.hibernate" level="WARN"/>

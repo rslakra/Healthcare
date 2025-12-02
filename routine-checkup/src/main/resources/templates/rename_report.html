@@ -2,22 +2,39 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Rename report</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rename Report - Routine Checkup</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
-<form th:action="@{/rename_report}" th:object="${rename_report_dto}"
-      method="POST">
-    <input type="hidden" th:field="*{oldName}">
+    <div th:replace="~{fragments/navigation :: nav}"></div>
+    
+    <div class="container fade-in">
+        <div class="page-header">
+            <h1>✏️ Rename Report</h1>
+            <p>Update the name of your report</p>
+        </div>
 
-    <label for="new_name_inp">Enter new name</label>
-    <input type="text"
-           th:field="*{newName}"
-           id="new_name_inp"
-           th:value="${rename_report_dto.getOldName()}"
-           required>
-    <br>
+        <div class="form-container">
+            <form th:action="@{/rename_report}" th:object="${rename_report_dto}" method="POST">
+                <input type="hidden" th:field="*{oldName}">
 
-    <button id="send" type="submit">Rename</button>
-</form>
+                <div class="form-group">
+                    <label for="new_name_inp">New Report Name</label>
+                    <input type="text"
+                           th:field="*{newName}"
+                           id="new_name_inp"
+                           th:value="${rename_report_dto.getOldName()}"
+                           placeholder="Enter new report name"
+                           required>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">💾 Rename Report</button>
+                    <a th:href="@{/monthly_report}" class="btn btn-outline">↩️ Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

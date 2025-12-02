@@ -5,7 +5,7 @@ import com.rslakra.healthcare.routinecheckup.service.ServiceScheduleService;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.Messages;
 import com.rslakra.healthcare.routinecheckup.utils.constants.ModelAttributesNames;
 import com.rslakra.healthcare.routinecheckup.utils.constants.ViewNames;
-import com.rslakra.healthcare.routinecheckup.utils.exceptions.UnknownServiceException;
+import com.rslakra.healthcare.routinecheckup.exceptions.UnknownServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

@@ -1,8 +1,8 @@
 package com.rslakra.healthcare.routinecheckup.service.impl.security;
 
-import com.rslakra.healthcare.routinecheckup.keyvalue.entity.UserCsrfToken;
-import com.rslakra.healthcare.routinecheckup.keyvalue.repository.UserCsrfTokenRepository;
-import com.rslakra.healthcare.routinecheckup.service.security.TokenComponent;
+import com.rslakra.healthcare.routinecheckup.entity.UserCsrfToken;
+import com.rslakra.healthcare.routinecheckup.repository.UserCsrfTokenRepository;
+import com.rslakra.healthcare.routinecheckup.service.security.TokenService;
 import com.rslakra.healthcare.routinecheckup.utils.components.holder.CsrfConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.web.csrf.CsrfToken;
@@ -23,7 +23,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CustomCsrfTokenRepository implements CsrfTokenRepository {
 
-    private final TokenComponent tokenComponent;
+    private final TokenService tokenService;
     private final CsrfConstants csrfConstants;
     private final UserCsrfTokenRepository userCsrfTokenRepository;
 
@@ -37,7 +37,7 @@ public class CustomCsrfTokenRepository implements CsrfTokenRepository {
 
     @Override
     public void saveToken(CsrfToken token, HttpServletRequest request, HttpServletResponse response) {
-        Optional<String> jwtOpt = tokenComponent.getTokenFromRequest(request);
+        Optional<String> jwtOpt = tokenService.getTokenFromRequest(request);
         if (!jwtOpt.isPresent()) {
             return;
         }
@@ -48,7 +48,7 @@ public class CustomCsrfTokenRepository implements CsrfTokenRepository {
 
     @Override
     public CsrfToken loadToken(HttpServletRequest request) {
-        Optional<String> jwtOpt = tokenComponent.getTokenFromRequest(request);
+        Optional<String> jwtOpt = tokenService.getTokenFromRequest(request);
         if (!jwtOpt.isPresent()) {
             return null;
         }

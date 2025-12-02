@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Action Result - Routine Checkup</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card fade-in">
+            <h1>🔧 Admin Action</h1>
+            
+            <div th:if="${success}" class="alert alert-success">
+                <h3 style="margin-bottom: 1rem;">✅ Success!</h3>
+                <p th:text="${message}"></p>
+                
+                <div th:if="${token}" style="margin-top: 1rem; padding: 1rem; background: #f5f5f5; border-radius: 4px;">
+                    <p><strong>Registration Token:</strong></p>
+                    <code style="word-break: break-all; display: block; margin-top: 0.5rem;" th:text="${token}"></code>
+                </div>
+                
+                <div th:if="${registrationUrl}" style="margin-top: 1rem;">
+                    <p><strong>Registration URL:</strong></p>
+                    <a th:href="${registrationUrl}" th:text="${registrationUrl}" style="word-break: break-all; display: block; margin-top: 0.5rem;"></a>
+                </div>
+                
+                <div th:if="${loginUrl}" style="margin-top: 1.5rem;">
+                    <a th:href="${loginUrl}" class="btn btn-primary">Go to Login</a>
+                </div>
+            </div>
+            
+            <div th:if="${!success}" class="alert alert-error">
+                <h3 style="margin-bottom: 1rem;">❌ Error</h3>
+                <p th:text="${message}"></p>
+            </div>
+            
+            <div class="auth-links" style="margin-top: 2rem;">
+                <p><a th:href="@{/login}">Back to Login</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
