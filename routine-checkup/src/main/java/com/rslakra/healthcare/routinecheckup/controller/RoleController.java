@@ -4,7 +4,6 @@ import com.rslakra.healthcare.routinecheckup.dto.request.RoleRequestDto;
 import com.rslakra.healthcare.routinecheckup.dto.response.RoleResponseDto;
 import com.rslakra.healthcare.routinecheckup.entity.RoleEntity;
 import com.rslakra.healthcare.routinecheckup.service.RoleService;
-import com.rslakra.healthcare.routinecheckup.utils.constants.ModelAttributesNames;
 import com.rslakra.healthcare.routinecheckup.utils.constants.ViewNames;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

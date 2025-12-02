@@ -11,8 +11,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mail.MailAuthenticationException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSendException;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import java.util.HashMap;
@@ -63,21 +65,21 @@ class EmailServiceImplTest {
     @Test
     void testSendMessage_Success() {
         // Given
-        doNothing().when(javaMailSender).send(any(org.springframework.mail.SimpleMailMessage.class));
+        doNothing().when(javaMailSender).send(any(SimpleMailMessage.class));
 
         // When & Then - Should not throw
         assertDoesNotThrow(() -> 
             emailService.sendMessage("test@example.com", "Subject", "Body")
         );
 
-        verify(javaMailSender, times(1)).send(any(org.springframework.mail.SimpleMailMessage.class));
+        verify(javaMailSender, times(1)).send(any(SimpleMailMessage.class));
     }
 
     @Test
     void testSendMessage_MailException_ShouldThrow() {
         // Given
-        MailException mailException = new org.springframework.mail.MailAuthenticationException("Authentication failed");
-        doThrow(mailException).when(javaMailSender).send(any(org.springframework.mail.SimpleMailMessage.class));
+        MailException mailException = new MailAuthenticationException("Authentication failed");
+        doThrow(mailException).when(javaMailSender).send(any(SimpleMailMessage.class));
 
         // When & Then
         MailException thrown = assertThrows(MailException.class, () -> 
@@ -85,14 +87,14 @@ class EmailServiceImplTest {
         );
 
         assertEquals("Authentication failed", thrown.getMessage());
-        verify(javaMailSender, times(1)).send(any(org.springframework.mail.SimpleMailMessage.class));
+        verify(javaMailSender, times(1)).send(any(SimpleMailMessage.class));
     }
 
     @Test
     void testSendMessage_UnexpectedException_ShouldWrapInMailSendException() {
         // Given
         doThrow(new RuntimeException("Unexpected error"))
-            .when(javaMailSender).send(any(org.springframework.mail.SimpleMailMessage.class));
+            .when(javaMailSender).send(any(SimpleMailMessage.class));
 
         // When & Then - Should wrap in MailSendException
         MailSendException thrown = assertThrows(MailSendException.class, () -> 
@@ -100,7 +102,7 @@ class EmailServiceImplTest {
         );
 
         assertTrue(thrown.getMessage().contains("Email sending failed"));
-        verify(javaMailSender, times(1)).send(any(org.springframework.mail.SimpleMailMessage.class));
+        verify(javaMailSender, times(1)).send(any(SimpleMailMessage.class));
     }
 
     // ==================== sendEmail() Tests ====================
@@ -108,7 +110,7 @@ class EmailServiceImplTest {
     @Test
     void testSendEmail_Registration_Success() {
         // Given
-        doNothing().when(javaMailSender).send(any(org.springframework.mail.SimpleMailMessage.class));
+        doNothing().when(javaMailSender).send(any(SimpleMailMessage.class));
         when(tokenService.generateRegistrationToken(any(UserEntity.class))).thenReturn("test-token-123");
         when(webConstants.getDomainName()).thenReturn("localhost");
         when(webConstants.getAppPort()).thenReturn(8080);
@@ -123,14 +125,14 @@ class EmailServiceImplTest {
         assertNotNull(token);
         assertEquals("test-token-123", token);
         verify(tokenService, times(1)).generateRegistrationToken(any(UserEntity.class));
-        verify(javaMailSender, times(1)).send(any(org.springframework.mail.SimpleMailMessage.class));
+        verify(javaMailSender, times(1)).send(any(SimpleMailMessage.class));
     }
 
     @Test
     void testSendEmail_Registration_EmailFailure_ShouldNotThrow() {
         // Given - Email sending will fail with MailAuthenticationException
-        doThrow(new org.springframework.mail.MailAuthenticationException("Authentication failed"))
-            .when(javaMailSender).send(any(org.springframework.mail.SimpleMailMessage.class));
+        doThrow(new MailAuthenticationException("Authentication failed"))
+            .when(javaMailSender).send(any(SimpleMailMessage.class));
         when(tokenService.generateRegistrationToken(any(UserEntity.class))).thenReturn("test-token-123");
         when(webConstants.getDomainName()).thenReturn("localhost");
         when(webConstants.getAppPort()).thenReturn(8080);
@@ -147,14 +149,14 @@ class EmailServiceImplTest {
         assertNotNull(token);
         assertEquals("test-token-123", token);
         verify(tokenService, times(1)).generateRegistrationToken(any(UserEntity.class));
-        verify(javaMailSender, times(1)).send(any(org.springframework.mail.SimpleMailMessage.class));
+        verify(javaMailSender, times(1)).send(any(SimpleMailMessage.class));
     }
 
     @Test
     void testSendEmail_Registration_UnexpectedException_ShouldNotThrow() {
         // Given - Email sending will fail with unexpected RuntimeException
         doThrow(new RuntimeException("Unexpected error"))
-            .when(javaMailSender).send(any(org.springframework.mail.SimpleMailMessage.class));
+            .when(javaMailSender).send(any(SimpleMailMessage.class));
         when(tokenService.generateRegistrationToken(any(UserEntity.class))).thenReturn("test-token-123");
         when(webConstants.getDomainName()).thenReturn("localhost");
         when(webConstants.getAppPort()).thenReturn(8080);
@@ -170,13 +172,13 @@ class EmailServiceImplTest {
         // Then - Token should still be returned even though email failed
         assertNotNull(token);
         assertEquals("test-token-123", token);
-        verify(javaMailSender, times(1)).send(any(org.springframework.mail.SimpleMailMessage.class));
+        verify(javaMailSender, times(1)).send(any(SimpleMailMessage.class));
     }
 
     @Test
     void testSendEmail_Login_Success() {
         // Given
-        doNothing().when(javaMailSender).send(any(org.springframework.mail.SimpleMailMessage.class));
+        doNothing().when(javaMailSender).send(any(SimpleMailMessage.class));
         when(webConstants.getDomainName()).thenReturn("localhost");
 
         // When
@@ -184,13 +186,13 @@ class EmailServiceImplTest {
 
         // Then - LOGIN type doesn't return a token
         assertNull(result);
-        verify(javaMailSender, times(1)).send(any(org.springframework.mail.SimpleMailMessage.class));
+        verify(javaMailSender, times(1)).send(any(SimpleMailMessage.class));
     }
 
     @Test
     void testSendEmail_PasswordReset_WithResetToken() {
         // Given
-        doNothing().when(javaMailSender).send(any(org.springframework.mail.SimpleMailMessage.class));
+        doNothing().when(javaMailSender).send(any(SimpleMailMessage.class));
         Map<String, Object> additionalData = new HashMap<>();
         additionalData.put("resetToken", "reset-token-456");
 
@@ -199,26 +201,26 @@ class EmailServiceImplTest {
 
         // Then
         assertEquals("reset-token-456", result);
-        verify(javaMailSender, times(1)).send(any(org.springframework.mail.SimpleMailMessage.class));
+        verify(javaMailSender, times(1)).send(any(SimpleMailMessage.class));
     }
 
     @Test
     void testSendEmail_AccountActivation_Success() {
         // Given
-        doNothing().when(javaMailSender).send(any(org.springframework.mail.SimpleMailMessage.class));
+        doNothing().when(javaMailSender).send(any(SimpleMailMessage.class));
 
         // When
         String result = emailService.sendEmail(EmailType.ACCOUNT_ACTIVATION, userEntity, null);
 
         // Then - ACCOUNT_ACTIVATION type doesn't return a token
         assertNull(result);
-        verify(javaMailSender, times(1)).send(any(org.springframework.mail.SimpleMailMessage.class));
+        verify(javaMailSender, times(1)).send(any(SimpleMailMessage.class));
     }
 
     @Test
     void testSendEmail_Notification_WithCustomSubjectAndMessage() {
         // Given
-        doNothing().when(javaMailSender).send(any(org.springframework.mail.SimpleMailMessage.class));
+        doNothing().when(javaMailSender).send(any(SimpleMailMessage.class));
         Map<String, Object> additionalData = new HashMap<>();
         additionalData.put("subject", "Custom Subject");
         additionalData.put("message", "Custom notification message");
@@ -228,20 +230,20 @@ class EmailServiceImplTest {
 
         // Then - NOTIFICATION type doesn't return a token
         assertNull(result);
-        verify(javaMailSender, times(1)).send(any(org.springframework.mail.SimpleMailMessage.class));
+        verify(javaMailSender, times(1)).send(any(SimpleMailMessage.class));
     }
 
     @Test
     void testSendEmail_Notification_WithoutAdditionalData() {
         // Given
-        doNothing().when(javaMailSender).send(any(org.springframework.mail.SimpleMailMessage.class));
+        doNothing().when(javaMailSender).send(any(SimpleMailMessage.class));
 
         // When
         String result = emailService.sendEmail(EmailType.NOTIFICATION, userEntity, null);
 
         // Then - Should use default subject and message
         assertNull(result);
-        verify(javaMailSender, times(1)).send(any(org.springframework.mail.SimpleMailMessage.class));
+        verify(javaMailSender, times(1)).send(any(SimpleMailMessage.class));
     }
 
     // ==================== sendEmailAsync() Tests ====================
@@ -249,7 +251,7 @@ class EmailServiceImplTest {
     @Test
     void testSendEmailAsync_Success() {
         // Given
-        doNothing().when(javaMailSender).send(any(org.springframework.mail.SimpleMailMessage.class));
+        doNothing().when(javaMailSender).send(any(SimpleMailMessage.class));
 
         // When
         CompletableFuture<Void> future = emailService.sendEmailAsync(
@@ -258,14 +260,14 @@ class EmailServiceImplTest {
         // Then
         assertNotNull(future);
         assertDoesNotThrow(() -> future.get());
-        verify(javaMailSender, times(1)).send(any(org.springframework.mail.SimpleMailMessage.class));
+        verify(javaMailSender, times(1)).send(any(SimpleMailMessage.class));
     }
 
     @Test
     void testSendEmailAsync_MailFailure_ShouldNotThrow() {
         // Given
-        doThrow(new org.springframework.mail.MailAuthenticationException("Authentication failed"))
-            .when(javaMailSender).send(any(org.springframework.mail.SimpleMailMessage.class));
+        doThrow(new MailAuthenticationException("Authentication failed"))
+            .when(javaMailSender).send(any(SimpleMailMessage.class));
 
         // When & Then - Should not throw, should complete gracefully
         CompletableFuture<Void> future = assertDoesNotThrow(() -> 
@@ -274,14 +276,14 @@ class EmailServiceImplTest {
 
         assertNotNull(future);
         assertDoesNotThrow(() -> future.get());
-        verify(javaMailSender, times(1)).send(any(org.springframework.mail.SimpleMailMessage.class));
+        verify(javaMailSender, times(1)).send(any(SimpleMailMessage.class));
     }
 
     @Test
     void testSendEmailAsync_UnexpectedException_ShouldNotThrow() {
         // Given
         doThrow(new RuntimeException("Unexpected error"))
-            .when(javaMailSender).send(any(org.springframework.mail.SimpleMailMessage.class));
+            .when(javaMailSender).send(any(SimpleMailMessage.class));
 
         // When & Then - Should not throw, should complete gracefully
         CompletableFuture<Void> future = assertDoesNotThrow(() -> 
@@ -290,7 +292,7 @@ class EmailServiceImplTest {
 
         assertNotNull(future);
         assertDoesNotThrow(() -> future.get());
-        verify(javaMailSender, times(1)).send(any(org.springframework.mail.SimpleMailMessage.class));
+        verify(javaMailSender, times(1)).send(any(SimpleMailMessage.class));
     }
 }
 

@@ -20,6 +20,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mail.MailAuthenticationException;
 import org.springframework.mail.MailException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -145,7 +146,7 @@ class UserServiceImplTest {
         when(userRepository.existsByMail(anyString())).thenReturn(false);
         when(userRepository.save(any(UserEntity.class))).thenReturn(userEntity);
         when(emailService.sendEmail(eq(EmailType.REGISTRATION), any(UserEntity.class), any()))
-            .thenThrow(new org.springframework.mail.MailAuthenticationException("Authentication failed"));
+            .thenThrow(new MailAuthenticationException("Authentication failed"));
         when(dtoUtils.convertUser(any(UserEntity.class))).thenReturn(userResponseDto);
 
         // When
