@@ -2,7 +2,11 @@ package com.rslakra.healthcare.routinecheckup.service.impl;
 
 import com.rslakra.healthcare.routinecheckup.dto.UserRequestDto;
 import com.rslakra.healthcare.routinecheckup.dto.request.ProfilePicRequestDto;
-import com.rslakra.healthcare.routinecheckup.dto.response.*;
+import com.rslakra.healthcare.routinecheckup.dto.response.DoctorResponseDto;
+import com.rslakra.healthcare.routinecheckup.dto.response.PatientResponseDto;
+import com.rslakra.healthcare.routinecheckup.dto.response.UserDoctorsAndPatients;
+import com.rslakra.healthcare.routinecheckup.dto.response.UserResponseDto;
+import com.rslakra.healthcare.routinecheckup.dto.response.UsersDoctorsAndPatients;
 import com.rslakra.healthcare.routinecheckup.entity.RoleEntity;
 import com.rslakra.healthcare.routinecheckup.entity.UserEntity;
 import com.rslakra.healthcare.routinecheckup.repository.UserRepository;

@@ -16,6 +16,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
@@ -25,6 +26,32 @@ import org.springframework.security.web.csrf.CsrfTokenRepository;
 import jakarta.servlet.Filter;
 
 /**
+ * Spring Security configuration class for the Routine Checkup healthcare application.
+ * 
+ * <p>This class configures:
+ * <ul>
+ *   <li>HTTP security rules and authorization policies</li>
+ *   <li>Authentication mechanisms (form login, JWT)</li>
+ *   <li>Session management (stateless with JWT)</li>
+ *   <li>CSRF protection</li>
+ *   <li>Custom security filters (JWT, login attempt tracking, request logging)</li>
+ * </ul>
+ * 
+ * <p>Security roles supported:
+ * <ul>
+ *   <li>ADMIN - Full administrative access</li>
+ *   <li>DOCTOR - Medical professional access</li>
+ *   <li>NURSE - Nursing staff access</li>
+ *   <li>PATIENT - Patient access</li>
+ * </ul>
+ * 
+ * <p>Public endpoints (no authentication required):
+ * <ul>
+ *   <li>Static resources (CSS, JS, images)</li>
+ *   <li>H2 console (development only)</li>
+ *   <li>Login and registration pages</li>
+ * </ul>
+ * 
  * @author Rohtash Lakra
  * @created 8/12/21 3:56 PM
  */
@@ -33,17 +60,74 @@ import jakarta.servlet.Filter;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    /** Service for user-related operations (not directly used in this config, but available for future use). */
     private final UserService userService;
+    
+    /** Password encoder for hashing and verifying user passwords. */
     private final PasswordEncoder passwordEncoder;
+    
+    /** Custom handler for successful authentication events. */
     private final AuthenticationSuccessHandler customAuthenticationSuccessHandler;
-    private final org.springframework.security.web.authentication.AuthenticationFailureHandler customAuthenticationFailureHandler;
+    
+    /** Custom handler for failed authentication attempts. */
+    private final AuthenticationFailureHandler customAuthenticationFailureHandler;
+    
+    /**
+     * Filter for JWT token-based authentication.
+     * Note: jakarta.servlet.Filter is not a generic interface, so raw type is required.
+     */
     private final Filter jwtAuthenticationFilter;
+    
+    /**
+     * Filter for tracking and limiting login attempt counts.
+     * Note: jakarta.servlet.Filter is not a generic interface, so raw type is required.
+     */
     private final Filter loginAttemptCountFilter;
+    
+    /**
+     * Filter for logging HTTP requests for security auditing.
+     * Note: jakarta.servlet.Filter is not a generic interface, so raw type is required.
+     */
     private final Filter requestLoggingFilter;
+    
+    /** Custom handler for successful logout events. */
     private final LogoutSuccessHandler customLogoutSuccessHandler;
+    
+    /** Custom CSRF token repository for managing CSRF tokens. */
     private final CsrfTokenRepository customCsrfTokenRepository;
+    
+    /**
+     * Filter for debugging login-related issues (development/testing).
+     * Note: jakarta.servlet.Filter is not a generic interface, so raw type is required.
+     */
     private final Filter loginDebugFilter;
 
+    /**
+     * Configures the security filter chain for the application.
+     * 
+     * <p>This method sets up:
+     * <ul>
+     *   <li>Authorization rules based on user roles</li>
+     *   <li>Form-based login configuration</li>
+     *   <li>Logout handling</li>
+     *   <li>CSRF protection with custom token repository</li>
+     *   <li>Stateless session management (for JWT-based authentication)</li>
+     *   <li>Custom security filters in the correct order</li>
+     * </ul>
+     * 
+     * <p>Filter order:
+     * <ol>
+     *   <li>Request logging filter</li>
+     *   <li>Login attempt count filter</li>
+     *   <li>Login debug filter</li>
+     *   <li>Username/password authentication filter</li>
+     *   <li>JWT authentication filter</li>
+     * </ol>
+     * 
+     * @param http the HttpSecurity object to configure
+     * @return the configured SecurityFilterChain
+     * @throws Exception if configuration fails
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -109,6 +193,20 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Creates and configures the AuthenticationManager bean.
+     * 
+     * <p>This method sets up a DAO-based authentication provider that:
+     * <ul>
+     *   <li>Uses the provided UserDetailsService to load user details</li>
+     *   <li>Uses the provided PasswordEncoder to verify passwords</li>
+     *   <li>Returns a ProviderManager with the configured authentication provider</li>
+     * </ul>
+     * 
+     * @param userDetailsService the service to load user details
+     * @param passwordEncoder the encoder to verify passwords
+     * @return the configured AuthenticationManager
+     */
     @Bean
     public AuthenticationManager authenticationManager(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
