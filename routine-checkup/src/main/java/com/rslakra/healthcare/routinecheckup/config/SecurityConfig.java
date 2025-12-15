@@ -135,7 +135,7 @@ public class SecurityConfig {
                         // Permit static resources
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**", "/static/**").permitAll()
                         // Permit H2 console (for development - disable in production)
-                        .requestMatchers("/h2/**", "/h2-console/**").permitAll()
+                        .requestMatchers("/h2/**", "/h2/**").permitAll()
                         // Permit login and registration
                         .requestMatchers(HttpMethod.POST, ViewNames.LOGIN_URL).permitAll()
                         .requestMatchers(ViewNames.REGISTRATION_URL).permitAll()
@@ -175,7 +175,7 @@ public class SecurityConfig {
                                 ViewNames.LOGIN_URL,
                                 ViewNames.REGISTRATION_URL,
                                 "/h2/**",
-                                "/h2-console/**"
+                                "/h2/**"
                         )
                 )
                 .headers(headers -> headers

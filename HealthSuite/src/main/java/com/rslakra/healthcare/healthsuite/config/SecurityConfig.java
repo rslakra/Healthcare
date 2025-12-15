@@ -100,7 +100,7 @@ public class SecurityConfig {
                     new AntPathRequestMatcher("/contact"),
                     new AntPathRequestMatcher("/contact-us"),
                     new AntPathRequestMatcher("/h2/**"),
-                    new AntPathRequestMatcher("/h2-console/**"),
+                    new AntPathRequestMatcher("/h2/**"),
                     new AntPathRequestMatcher("/login"),
                     new AntPathRequestMatcher("/login/**"),
                     new AntPathRequestMatcher("/jquery-1.8.3.js"),
@@ -116,7 +116,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf
                 .ignoringRequestMatchers(
                     new AntPathRequestMatcher("/h2/**"),
-                    new AntPathRequestMatcher("/h2-console/**")
+                    new AntPathRequestMatcher("/h2/**")
                 )
             )
             .headers(headers -> headers
