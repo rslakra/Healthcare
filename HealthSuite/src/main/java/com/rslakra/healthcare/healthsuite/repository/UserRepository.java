@@ -26,12 +26,37 @@ public interface UserRepository {
     User findByUsername(String username);
 
     /**
+     * Find a user by email.
+     *
+     * @param email the email address
+     * @return the user, or null if not found
+     */
+    User findByEmail(String email);
+
+    /**
      * Check if a username exists in users table.
      * 
      * @param username the username to check
      * @return true if exists, false otherwise
      */
     boolean existsByUsername(String username);
+
+    /**
+     * Check if an email exists in users table.
+     *
+     * @param email the email to check
+     * @return true if exists, false otherwise
+     */
+    boolean existsByEmail(String email);
+
+    /**
+     * Update a user's password.
+     *
+     * @param username the username
+     * @param password the new password
+     * @return true if successful, false otherwise
+     */
+    boolean updatePassword(String username, String password);
 
     /**
      * Find all users.

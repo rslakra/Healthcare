@@ -25,9 +25,11 @@ public class User {
     @Size(max = 128, message = "Email must not exceed 128 characters")
     private String email;
 
+    @NotBlank(message = "First name is required")
     @Size(max = 64, message = "First name must not exceed 64 characters")
     private String firstName;
 
+    @NotBlank(message = "Last name is required")
     @Size(max = 64, message = "Last name must not exceed 64 characters")
     private String lastName;
 

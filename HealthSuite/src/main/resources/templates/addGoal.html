@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments :: head('Add Goal - HealthSuite')}"></head>
+<head th:replace="~{fragments/head :: head('Add Goal - HealthSuite')}"></head>
 <body>
-    <div th:replace="~{fragments :: navbar}"></div>
-    <div th:replace="~{fragments :: sidebar('add-goal')}"></div>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <div th:replace="~{fragments/sidebar :: sidebar('add-goal')}"></div>
 
     <!-- Main Content Area -->
     <div class="main-content">
@@ -35,7 +35,7 @@
         </div>
     </div>
 
-    <div th:replace="~{fragments :: scripts}"></div>
+    <div th:replace="~{fragments/scripts :: scripts}"></div>
 </body>
 </html>
 

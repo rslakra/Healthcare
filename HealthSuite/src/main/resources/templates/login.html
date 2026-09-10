@@ -1,53 +1,68 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments :: head('Login - HealthSuite')}"></head>
+<head th:replace="~{fragments/head :: head('Login - HealthSuite')}"></head>
+
 <body>
-    <div th:replace="~{fragments :: navbar}"></div>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <div th:replace="~{fragments/sidebar :: sidebar('login')}"></div>
 
     <!-- Main Content Area -->
-    <div class="main-content login-page">
+    <div class="main-content">
         <div class="login-container">
             <div class="login-card">
                 <h1>🔐 Login</h1>
                 <p>Sign in to your HealthSuite account</p>
-                
+
                 <!-- Error Message -->
                 <div th:if="${param.error}" class="error-message">
-                    Invalid username or password. Please try again.
+                    Invalid Credentials! Please try again.
                 </div>
-                
+
                 <!-- Logout Message -->
                 <div th:if="${param.logout}" class="logout-message">
                     You have been successfully logged out.
                 </div>
-                
+
+                <!-- Registration Success Message -->
+                <div th:if="${param.registered}" class="logout-message">
+                    Account created successfully. Please sign in.
+                </div>
+
+                <!-- Password Reset Success Message -->
+                <div th:if="${param.reset}" class="logout-message">
+                    Password reset successfully. Please sign in with your new password.
+                </div>
+
                 <!-- Login Form -->
                 <form th:action="@{/login}" method="post">
-                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                     <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" id="username" name="username" required autofocus 
-                               placeholder="Enter your username"/>
+                        <label for="username">Username or Email</label>
+                        <input type="text" id="username" name="username" required autofocus th:value="${param.username}"
+                            placeholder="Enter your username or email" />
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" id="password" name="password" required 
-                               placeholder="Enter your password"/>
+                        <input type="password" id="password" name="password" required
+                            placeholder="Enter your password" />
+                        <div class="form-helper-link">
+                            <a th:href="@{/reset-password}">Forgot password?</a>
+                        </div>
                     </div>
-                    
+
                     <button type="submit" class="btn-login">Login</button>
                 </form>
-                
+
                 <div class="back-link">
-                    <a th:href="@{/}">← Back to Home</a>
+                    Don't have an account? <a th:href="@{/register}">Register</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <div th:replace="~{fragments :: scripts}"></div>
+    <div th:replace="~{fragments/scripts :: scripts}"></div>
 </body>
-</html>
 
+</html>

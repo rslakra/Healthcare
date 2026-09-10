@@ -42,6 +42,31 @@ public interface UserService {
     boolean existsByUsername(String username);
 
     /**
+     * Check if an email exists.
+     *
+     * @param email the email to check
+     * @return true if exists, false otherwise
+     */
+    boolean existsByEmail(String email);
+
+    /**
+     * Register a new user and assign the default USER role.
+     *
+     * @param user the user to register
+     * @return true if successful, false otherwise
+     */
+    boolean registerUser(User user);
+
+    /**
+     * Reset a user's password.
+     *
+     * @param username the username
+     * @param newPassword the new password
+     * @return true if successful, false otherwise
+     */
+    boolean resetPassword(String username, String newPassword);
+
+    /**
      * Get the current authenticated user's ID.
      * 
      * @return the user ID, or null if not authenticated

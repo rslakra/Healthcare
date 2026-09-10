@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments :: head('Log Minutes - HealthSuite')}"></head>
+<head th:replace="~{fragments/head :: head('Log Minutes - HealthSuite')}"></head>
 <body>
-    <div th:replace="~{fragments :: navbar}"></div>
-    <div th:replace="~{fragments :: sidebar('add-minutes')}"></div>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <div th:replace="~{fragments/sidebar :: sidebar('add-minutes')}"></div>
 
     <!-- Main Content Area -->
     <div class="main-content">
@@ -58,7 +58,7 @@
         </div>
     </div>
 
-    <div th:replace="~{fragments :: scripts}"></div>
+    <div th:replace="~{fragments/scripts :: scripts}"></div>
     <script type="text/javascript">
         // Load activities from API
         if (typeof jQuery !== 'undefined') {
