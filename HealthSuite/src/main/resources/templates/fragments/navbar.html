@@ -1,0 +1,25 @@
+<div th:fragment="navbar" xmlns:th="http://www.thymeleaf.org">
+    <div class="navbar navbar-fixed-top navbar-inverse">
+        <div class="navbar-inner">
+            <div class="container">
+                <a class="brand navbar-brand" th:href="@{/}">HealthSuite</a>
+                <ul class="nav pull-right">
+                    <li th:if="${authenticated}">
+                        <a href="#">
+                            <span th:text="'Welcome, ' + ${username}"></span>
+                        </a>
+                    </li>
+                    <li th:if="${authenticated}">
+                        <a th:href="@{/logout}">Logout</a>
+                    </li>
+                    <li th:unless="${authenticated}">
+                        <a th:href="@{/register}">Register</a>
+                    </li>
+                    <li th:unless="${authenticated}">
+                        <a th:href="@{/login}">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

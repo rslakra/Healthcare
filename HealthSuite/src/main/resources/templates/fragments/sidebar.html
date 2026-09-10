@@ -1,0 +1,45 @@
+<div th:fragment="sidebar(activeItem)" xmlns:th="http://www.thymeleaf.org">
+    <div class="sidebar">
+        <ul class="nav">
+            <li class="nav-header">Main Menu</li>
+            <li>
+                <a th:href="@{/}" th:class="${activeItem == 'home' ? 'active' : ''}">🏠 Home</a>
+            </li>
+            <li>
+                <a th:href="@{/about}" th:class="${activeItem == 'about' ? 'active' : ''}">ℹ️ About</a>
+            </li>
+            <li>
+                <a th:href="@{/contact}" th:class="${activeItem == 'contact' ? 'active' : ''}">📧 Contact Us</a>
+            </li>
+            <li th:unless="${authenticated}">
+                <a th:href="@{/login}" th:class="${activeItem == 'login' ? 'active' : ''}">🔐 Login</a>
+            </li>
+
+            <li class="nav-header" th:if="${authenticated}">Activity Management</li>
+            <li th:if="${authenticated}">
+                <a th:href="@{/exercises}" th:class="${activeItem == 'exercises' ? 'active' : ''}">📊 Activities</a>
+            </li>
+            <li th:if="${authenticated}">
+                <a th:href="@{/add-goal}" th:class="${activeItem == 'add-goal' ? 'active' : ''}">🎯 Set Goal</a>
+            </li>
+            <li th:if="${authenticated}">
+                <a th:href="@{/add-minutes}" th:class="${activeItem == 'add-minutes' ? 'active' : ''}">⏱️ Log
+                    Minutes</a>
+            </li>
+
+            <li class="nav-header" th:if="${authenticated}">User Management</li>
+            <li th:if="${authenticated}">
+                <a th:href="@{/users}" th:class="${activeItem == 'users' ? 'active' : ''}">👥 Users</a>
+            </li>
+
+            <li class="nav-header" th:if="${authenticated}">System</li>
+            <li th:if="${authenticated}">
+                <a th:href="@{/h2}" target="_blank">🗄️ Database Console</a>
+            </li>
+        </ul>
+
+        <div class="user-info" th:if="${authenticated}">
+            <div><strong>User:</strong> <span th:text="${username}"></span></div>
+        </div>
+    </div>
+</div>

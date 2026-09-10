@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<head th:replace="~{fragments :: head('HealthSuite - Home')}"></head>
+<head th:replace="~{fragments/head :: head('HealthSuite - Home')}"></head>
+
 <body>
-    <div th:replace="~{fragments :: navbar}"></div>
-    <div th:replace="~{fragments :: sidebar('home')}"></div>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <div th:replace="~{fragments/sidebar :: sidebar('home')}"></div>
 
     <!-- Main Content Area -->
     <div class="main-content">
@@ -16,7 +17,9 @@
             </p>
             <p th:unless="${authenticated}">
                 Your comprehensive healthcare management system for tracking exercises, goals, and wellness.
-                <br><a th:href="@{/login}" style="color: white; text-decoration: underline; font-weight: bold;">Login</a> to access all features.
+                <br><a th:href="@{/login}"
+                    style="color: white; text-decoration: underline; font-weight: bold;">Login</a> to access all
+                features.
             </p>
         </div>
 
@@ -49,38 +52,38 @@
                 <h4>Add Exercise</h4>
                 <p>Log your exercise activities and track your fitness progress</p>
             </a>
-            
+
             <a th:href="@{/exercises}" class="action-card">
                 <div class="icon">📊</div>
                 <h4>View Exercises</h4>
                 <p>Review your exercise history and analyze your activity patterns</p>
             </a>
-            
+
             <a th:href="@{/add-goal}" class="action-card">
                 <div class="icon">🎯</div>
                 <h4>Set Goals</h4>
                 <p>Define your fitness objectives and track your achievements</p>
             </a>
-            
+
             <a th:href="@{/add-minutes}" class="action-card">
                 <div class="icon">⏱️</div>
                 <h4>Log Minutes</h4>
                 <p>Record exercise duration and monitor your daily activity time</p>
             </a>
-            
+
             <a th:href="@{/add-users}" class="action-card">
                 <div class="icon">👤</div>
                 <h4>Manage Users</h4>
                 <p>Add and manage healthcare team members and their profiles</p>
             </a>
-            
-            <a th:href="@{/add-registration}" class="action-card">
+
+            <a th:href="@{/register}" class="action-card">
                 <div class="icon">📝</div>
                 <h4>Registration</h4>
                 <p>Register new users and manage healthcare team access</p>
             </a>
         </div>
-        
+
         <!-- Public Quick Actions -->
         <div class="quick-actions" th:unless="${authenticated}">
             <a th:href="@{/login}" class="action-card">
@@ -88,13 +91,19 @@
                 <h4>Login</h4>
                 <p>Access your account to manage exercises, goals, and more</p>
             </a>
-            
+
+            <a th:href="@{/register}" class="action-card">
+                <div class="icon">📝</div>
+                <h4>Register</h4>
+                <p>Create a new account to start tracking your health journey</p>
+            </a>
+
             <a th:href="@{/about}" class="action-card">
                 <div class="icon">ℹ️</div>
                 <h4>About Us</h4>
                 <p>Learn more about HealthSuite and our mission</p>
             </a>
-            
+
             <a th:href="@{/contact}" class="action-card">
                 <div class="icon">📧</div>
                 <h4>Contact Us</h4>
@@ -109,13 +118,15 @@
                     <h3>🌟 Key Features</h3>
                     <ul style="list-style: none; padding: 0; margin: 20px 0 0 0;">
                         <li style="padding: 10px 0; border-bottom: 1px solid #ecf0f1;">
-                            <strong>Exercise Management:</strong> Track various activities including running, biking, swimming, and more
+                            <strong>Exercise Management:</strong> Track various activities including running, biking,
+                            swimming, and more
                         </li>
                         <li style="padding: 10px 0; border-bottom: 1px solid #ecf0f1;">
                             <strong>Goal Setting:</strong> Set personalized exercise goals and monitor your progress
                         </li>
                         <li style="padding: 10px 0; border-bottom: 1px solid #ecf0f1;">
-                            <strong>User Management:</strong> Comprehensive user and role management for healthcare teams
+                            <strong>User Management:</strong> Comprehensive user and role management for healthcare
+                            teams
                         </li>
                         <li style="padding: 10px 0;">
                             <strong>Secure Access:</strong> Role-based access control with Spring Security integration
@@ -126,6 +137,7 @@
         </div>
     </div>
 
-    <div th:replace="~{fragments :: scripts}"></div>
+    <div th:replace="~{fragments/scripts :: scripts}"></div>
 </body>
+
 </html>

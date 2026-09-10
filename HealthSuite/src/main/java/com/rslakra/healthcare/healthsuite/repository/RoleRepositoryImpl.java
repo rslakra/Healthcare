@@ -45,6 +45,10 @@ public class RoleRepositoryImpl implements RoleRepository {
         "WHERE ur.user_id = ? " +
         "ORDER BY r.name";
 
+    private static final String ASSIGN_ROLE_SQL =
+        "INSERT INTO user_roles (user_id, role_id) " +
+        "SELECT ?, id FROM roles WHERE name = ?";
+
     @Override
     public Role findById(Long id) {
         LOGGER.debug("Finding role by ID: {}", id);
@@ -89,6 +93,18 @@ public class RoleRepositoryImpl implements RoleRepository {
         } catch (Exception e) {
             LOGGER.error("Error finding roles by user ID: {}", e.getMessage(), e);
             return List.of();
+        }
+    }
+
+    @Override
+    public boolean assignRoleToUser(Long userId, String roleName) {
+        LOGGER.debug("Assigning role {} to user {}", roleName, userId);
+        try {
+            int rowsAffected = jdbcTemplate.update(ASSIGN_ROLE_SQL, userId, roleName);
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            LOGGER.error("Error assigning role to user: {}", e.getMessage(), e);
+            return false;
         }
     }
 

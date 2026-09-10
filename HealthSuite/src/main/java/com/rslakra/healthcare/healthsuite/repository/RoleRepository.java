@@ -41,5 +41,14 @@ public interface RoleRepository {
      * @return a list of Role for the user
      */
     List<Role> findByUserId(Long userId);
+
+    /**
+     * Assign a role to a user.
+     *
+     * @param userId the user ID
+     * @param roleName the role name
+     * @return true if successful, false otherwise
+     */
+    boolean assignRoleToUser(Long userId, String roleName);
 }
 

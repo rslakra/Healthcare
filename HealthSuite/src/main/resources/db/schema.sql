@@ -146,6 +146,17 @@ where not exists (
 );
 
 -- ============================================================================
+-- ENSURE ALL USERS HAVE AT LEAST THE USER ROLE
+-- ============================================================================
+insert into `user_roles` (`user_id`, `role_id`)
+select u.id, r.id
+from users u
+inner join roles r on r.name = 'USER'
+where not exists (
+    select 1 from user_roles ur where ur.user_id = u.id
+);
+
+-- ============================================================================
 -- NOTE: Spring Security authorities are automatically generated from user_roles
 -- The SecurityConfig.java uses a custom query that joins user_roles and roles
 -- tables and prefixes role names with "ROLE_" (e.g., "USER" becomes "ROLE_USER")

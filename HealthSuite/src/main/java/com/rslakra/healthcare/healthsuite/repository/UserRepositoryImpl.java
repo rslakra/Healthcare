@@ -41,12 +41,22 @@ public class UserRepositoryImpl implements UserRepository {
         "SELECT id, username, email, first_name, last_name, password, enabled, created_at, updated_at " +
         "FROM users WHERE username = ?";
 
+    private static final String FIND_BY_EMAIL_SQL =
+        "SELECT id, username, email, first_name, last_name, password, enabled, created_at, updated_at " +
+        "FROM users WHERE LOWER(email) = LOWER(?)";
+
     private static final String FIND_BY_ID_SQL = 
         "SELECT id, username, email, first_name, last_name, password, enabled, created_at, updated_at " +
         "FROM users WHERE id = ?";
 
     private static final String EXISTS_BY_USERNAME_SQL = 
         "SELECT COUNT(*) FROM users WHERE username = ?";
+
+    private static final String EXISTS_BY_EMAIL_SQL =
+        "SELECT COUNT(*) FROM users WHERE email = ?";
+
+    private static final String UPDATE_PASSWORD_SQL =
+        "UPDATE users SET password = ?, updated_at = CURRENT_TIMESTAMP WHERE username = ?";
 
     private static final String FIND_ALL_SQL = 
         "SELECT id, username, email, first_name, last_name, password, enabled, created_at, updated_at " +
@@ -104,6 +114,18 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public User findByEmail(String email) {
+        LOGGER.debug("Finding user by email: {}", email);
+        try {
+            return jdbcTemplate.queryForObject(FIND_BY_EMAIL_SQL,
+                new UserRowMapper(), email);
+        } catch (Exception e) {
+            LOGGER.debug("User not found for email: {}", email);
+            return null;
+        }
+    }
+
+    @Override
     public User findById(Long id) {
         LOGGER.debug("Finding user by ID: {}", id);
         try {
@@ -124,6 +146,31 @@ public class UserRepositoryImpl implements UserRepository {
             return count != null && count > 0;
         } catch (Exception e) {
             LOGGER.error("Error checking username existence: {}", e.getMessage(), e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        LOGGER.debug("Checking if email exists: {}", email);
+        try {
+            Integer count = jdbcTemplate.queryForObject(EXISTS_BY_EMAIL_SQL,
+                Integer.class, email);
+            return count != null && count > 0;
+        } catch (Exception e) {
+            LOGGER.error("Error checking email existence: {}", e.getMessage(), e);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean updatePassword(String username, String password) {
+        LOGGER.debug("Updating password for user: {}", username);
+        try {
+            int rowsAffected = jdbcTemplate.update(UPDATE_PASSWORD_SQL, password, username);
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            LOGGER.error("Error updating password: {}", e.getMessage(), e);
             return false;
         }
     }

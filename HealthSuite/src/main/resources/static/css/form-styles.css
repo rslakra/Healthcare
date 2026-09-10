@@ -147,3 +147,21 @@
     box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
 }
 
+.form-helper-link {
+    text-align: right;
+    margin-top: 6px;
+}
+
+.form-helper-link a {
+    color: #3498db;
+    font-size: 0.85em;
+    text-decoration: none;
+}
+
+.form-helper-link a:hover {
+    text-decoration: underline;
+}
+
+.register-card {
+    max-width: 480px;
+}

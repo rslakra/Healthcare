@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="~{fragments :: head('Activities - HealthSuite')}"></head>
+<head th:replace="~{fragments/head :: head('Activities - HealthSuite')}"></head>
 <body>
-    <div th:replace="~{fragments :: navbar}"></div>
-    <div th:replace="~{fragments :: sidebar('exercises')}"></div>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <div th:replace="~{fragments/sidebar :: sidebar('exercises')}"></div>
 
     <!-- Main Content Area -->
     <div class="main-content">
@@ -59,7 +59,7 @@
         </div>
     </div>
 
-    <div th:replace="~{fragments :: scripts}"></div>
+    <div th:replace="~{fragments/scripts :: scripts}"></div>
     <script type="text/javascript">
         // Calculate total minutes - ensure jQuery is loaded
         if (typeof jQuery !== 'undefined') {

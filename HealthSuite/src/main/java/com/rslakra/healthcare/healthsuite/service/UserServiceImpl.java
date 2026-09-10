@@ -1,6 +1,7 @@
 package com.rslakra.healthcare.healthsuite.service;
 
 import com.rslakra.healthcare.healthsuite.model.User;
+import com.rslakra.healthcare.healthsuite.repository.RoleRepository;
 import com.rslakra.healthcare.healthsuite.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +23,24 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private RoleRepository roleRepository;
+
     @Override
     public boolean saveUser(User user) {
         LOGGER.debug("Saving user: {}", user.getUsername());
-        return userRepository.save(user);
+        boolean isNewUser = !userRepository.existsByUsername(user.getUsername());
+        if (!userRepository.save(user)) {
+            return false;
+        }
+
+        if (isNewUser) {
+            User savedUser = userRepository.findByUsername(user.getUsername());
+            if (savedUser != null) {
+                roleRepository.assignRoleToUser(savedUser.getId(), "USER");
+            }
+        }
+        return true;
     }
 
     @Override
@@ -44,6 +59,38 @@ public class UserServiceImpl implements UserService {
     public boolean existsByUsername(String username) {
         LOGGER.debug("Checking if username exists: {}", username);
         return userRepository.existsByUsername(username);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        LOGGER.debug("Checking if email exists: {}", email);
+        return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public boolean registerUser(User user) {
+        LOGGER.debug("Registering user: {}", user.getUsername());
+        user.setEnabled(true);
+        if (!userRepository.save(user)) {
+            return false;
+        }
+
+        User savedUser = userRepository.findByUsername(user.getUsername());
+        if (savedUser == null) {
+            LOGGER.error("User saved but could not be loaded: {}", user.getUsername());
+            return false;
+        }
+
+        return roleRepository.assignRoleToUser(savedUser.getId(), "USER");
+    }
+
+    @Override
+    public boolean resetPassword(String username, String newPassword) {
+        LOGGER.debug("Resetting password for user: {}", username);
+        if (!userRepository.existsByUsername(username)) {
+            return false;
+        }
+        return userRepository.updatePassword(username, newPassword);
     }
 
     @Override

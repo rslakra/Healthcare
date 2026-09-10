@@ -10,7 +10,8 @@ body {
 
 /* Main Content Area */
 .main-content {
-    margin-left: 250px; /* 0px (sidebar left) + 250px (sidebar width) */
+    margin-left: 250px;
+    /* 0px (sidebar left) + 250px (sidebar width) */
     padding: 30px;
     min-height: calc(100vh - 60px);
 }
@@ -21,7 +22,7 @@ body {
     padding: 40px;
     border-radius: 10px;
     margin-bottom: 30px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .content-card h1 {
@@ -50,7 +51,7 @@ body {
     padding: 40px;
     border-radius: 10px;
     margin-bottom: 30px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .welcome-card h1 {
@@ -76,13 +77,13 @@ body {
     padding: 25px;
     border-radius: 8px;
     margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
 }
 
 .stats-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .stats-card h3 {
@@ -110,7 +111,7 @@ body {
     padding: 25px;
     border-radius: 8px;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: all 0.3s;
     text-decoration: none;
     color: inherit;
@@ -119,7 +120,7 @@ body {
 
 .action-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
     text-decoration: none;
     color: inherit;
 }
@@ -161,34 +162,104 @@ body {
 
 /* Contact Info */
 .contact-info {
-    background-color: #f8f9fa;
-    padding: 25px;
-    border-radius: 8px;
-    margin: 20px 0;
-    border-left: 4px solid #3498db;
+    background: linear-gradient(135deg, #f8fbff 0%, #f0f4f8 100%);
+    padding: 28px 30px;
+    border-radius: 10px;
+    margin: 24px 0 32px;
+    border: 1px solid #dce6f0;
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.08);
 }
 
 .contact-info h3 {
     color: #2c3e50;
-    margin-top: 0;
-}
-
-.contact-info p {
-    margin: 10px 0;
-}
-
-.contact-info strong {
-    color: #34495e;
+    margin: 0 0 6px 0;
+    font-size: 1.35em;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
     display: inline-block;
-    width: 120px;
+}
+
+.contact-info-intro {
+    color: #5d6d7e;
+    margin: 12px 0 20px;
+    font-size: 0.95em;
+}
+
+.contact-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.contact-detail {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: #ffffff;
+    padding: 16px 18px;
+    border-radius: 8px;
+    border: 1px solid #e8eef3;
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.contact-detail:hover {
+    border-color: #b8d4f0;
+    box-shadow: 0 3px 10px rgba(52, 152, 219, 0.12);
+}
+
+.contact-detail-icon {
+    font-size: 1.5em;
+    line-height: 1;
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eaf4fc;
+    border-radius: 8px;
+}
+
+.contact-detail-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.contact-detail-label {
+    color: #7f8c8d;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.contact-detail-body a,
+.contact-detail-body>span {
+    color: #2c3e50;
+    font-size: 0.95em;
+    line-height: 1.5;
+}
+
+.contact-detail-body a {
+    color: #3498db;
+    text-decoration: none;
+    word-break: break-word;
+}
+
+.contact-detail-body a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .contact-details {
+        grid-template-columns: 1fr;
+    }
 }
 
 
 /* Login Page Styles */
-.main-content.login-page {
-    margin-left: 0;
-}
-
 .login-container {
     display: flex;
     justify-content: center;
@@ -201,7 +272,7 @@ body {
     background: white;
     padding: 40px;
     border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 400px;
 }
@@ -261,7 +332,7 @@ body {
 /* Responsive Design */
 @media (max-width: 768px) {
     .main-content {
-        margin-left: 200px; /* 0px (sidebar left) + 200px (sidebar width) */
+        margin-left: 200px;
+        /* 0px (sidebar left) + 200px (sidebar width) */
     }
 }
-
